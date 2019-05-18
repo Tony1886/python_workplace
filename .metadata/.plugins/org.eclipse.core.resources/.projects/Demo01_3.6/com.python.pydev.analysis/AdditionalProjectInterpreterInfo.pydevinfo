@@ -1,0 +1,26 @@
+-- VERSION_4
+-- START DISKCACHE_2
+E:\python\python_workplace\.metadata\.plugins\org.eclipse.core.resources\.projects\Demo01_3.6\com.python.pydev.analysis\v2_indexcache
+TestTime|1494468241015010000|E:\python\python_workplace\Demo01_3.6\src\TestTime.py
+TestGUI|1494468184141010000|E:\python\python_workplace\Demo01_3.6\src\TestGUI.py
+TestMatlab|1494469513397010000|E:\python\python_workplace\Demo01_3.6\src\TestMatlab.py
+-- END DISKCACHE
+-- START DICTIONARY
+3
+1=TestTime
+2=TestGUI
+3=TestMatlab
+-- END DICTIONARY
+-- START TREE 1
+7
+dra|1|draw_number!10@
+gue|1|guess!19@
+num|1|number!19@
+roo|2|root!19@root!11@
+w|2|w!19@w!11@
+x|1|x!27@
+y|1|y!27@
+-- END TREE
+-- START TREE 2
+0
+-- END TREE

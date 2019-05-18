@@ -1,0 +1,16 @@
+INSTUPNN.NN1
+E:\python\python_workplace\MachineLearning\src\NN\NN1.py
+INFOS:&&2|1|2|0&&2|3|2|0&&2|4|2|0&&2|5|2|0&&1|6|2|0&&2|7|2|6&&3|8|2|9&&3|10|2|9&&3|8|2|9&&3|10|2|9&&3|11|2|9&&2|12|2|6&&2|13|2|6
+activation_deriv=10
+NeuralNetwork=6
+weights=11
+tanh_deriv=3
+fit=12
+tanh=1
+logistic=4
+NN.NN1=2
+predict=13
+__init__=7
+activation=8
+logistic_derivative=5
+NeuralNetwork.__init__=9

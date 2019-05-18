@@ -1,0 +1,851 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+
+<channel>
+	<title>Planet Eclipse</title>
+	<link>http://planeteclipse.org/planet/</link>
+	<language>en</language>
+	<description>Planet Eclipse - http://planeteclipse.org/planet/</description>
+
+<item>
+	<title>Donald Raab: EC by Example: Collect</title>
+	<guid isPermaLink="false">https://medium.com/p/262a46030c49</guid>
+	<link>https://medium.com/@donraab/ec-by-example-collect-262a46030c49?source=rss-df39b86e9f04------2</link>
+	<description>&lt;p&gt;Learn how to transform a collection using the &lt;em&gt;collect&lt;/em&gt; method in &lt;a href=&quot;https://www.eclipse.org/collections/&quot;&gt;Eclipse Collections&lt;/a&gt;.&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/1024/1*xqyPm6cMl0LVrKLVSXOIhA.png&quot; /&gt;The Golden Gate Bridge from Fort Point&lt;/figure&gt;&lt;h3&gt;What is Collect?&lt;/h3&gt;&lt;p&gt;The method named &lt;em&gt;collect&lt;/em&gt; in Eclipse Collections takes a Function as a parameter, applies that function to each element in a collection, and returns a the resulting collection. This method is the equivalent of the method named &lt;em&gt;map&lt;/em&gt; on the &lt;em&gt;java.util.Stream&lt;/em&gt; class in the JDK.&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/688/1*EJE8uUaDf-zm8aM9afdf4w.png&quot; /&gt;Calling collect on a List with a Function&lt;/figure&gt;&lt;p&gt;The method &lt;em&gt;collect&lt;/em&gt; in Eclipse Collections derives its name from the Smalltalk method named &lt;a href=&quot;https://martinfowler.com/articles/collection-pipeline/#op-catalog&quot;&gt;&lt;em&gt;collect&lt;/em&gt;&lt;/a&gt;. The method &lt;em&gt;collect&lt;/em&gt; will return the same collection type as the source collection (where feasible), but the value type contained in the collection may be different. The method &lt;em&gt;collect&lt;/em&gt; in Eclipse Collections should not be confused with the method &lt;em&gt;collect&lt;/em&gt; on &lt;em&gt;java.util.Stream&lt;/em&gt; which takes a &lt;em&gt;Collector&lt;/em&gt;. The method collect on &lt;em&gt;Stream&lt;/em&gt; is a more general &lt;a href=&quot;https://www.ibm.com/developerworks/library/j-java-streams-2-brian-goetz/&quot;&gt;mutable reduction&lt;/a&gt; which may return any type. The method &lt;em&gt;collect&lt;/em&gt; on &lt;em&gt;java.util.Stream&lt;/em&gt; does not appear on &lt;em&gt;java.util.Collection &lt;/em&gt;or any of its extensions. So while there is a conceptual naming collision, there is no overloading of the methods to cause extra confusion.&lt;/p&gt;&lt;h3&gt;Collecting from a List (Java 8)&lt;/h3&gt;&lt;pre&gt;@Test&lt;br /&gt;public void collectingFromAListJava8()&lt;br /&gt;{&lt;br /&gt;    ExecutorService executor = Executors.&lt;em&gt;newWorkStealingPool&lt;/em&gt;();&lt;br /&gt;&lt;br /&gt;    MutableList&amp;lt;Integer&amp;gt; mList = &lt;em&gt;mList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; iList = &lt;em&gt;iList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    Function&amp;lt;Integer, Integer&amp;gt; squared = i -&amp;gt; i * i;&lt;br /&gt;&lt;br /&gt;    MutableList&amp;lt;Integer&amp;gt; mutable = mList.collect(squared);&lt;br /&gt;&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; immutable = iList.collect(squared);&lt;br /&gt;&lt;br /&gt;    LazyIterable&amp;lt;Integer&amp;gt; lazy = mList.asLazy().collect(squared);&lt;br /&gt;&lt;br /&gt;    ParallelListIterable&amp;lt;Integer&amp;gt; parallel =&lt;br /&gt;            mList.asParallel(executor, 2).collect(squared);&lt;br /&gt;&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; expected = &lt;em&gt;iList&lt;/em&gt;(1, 4, 9, 16, 25);&lt;br /&gt;&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, mutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, immutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, lazy.toList());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, parallel.toList());&lt;br /&gt;}&lt;/pre&gt;&lt;h3&gt;Collecting from a List (Java 10)&lt;/h3&gt;&lt;pre&gt;@Test&lt;br /&gt;public void collectingFromAListJava10()&lt;br /&gt;{&lt;br /&gt;    var executor = Executors.&lt;em&gt;newWorkStealingPool&lt;/em&gt;();&lt;br /&gt;&lt;br /&gt;    var mutableList = &lt;em&gt;mList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;    var immutableList = &lt;em&gt;iList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    Function&amp;lt;Integer, Integer&amp;gt; squared = i -&amp;gt; i * i;&lt;br /&gt;&lt;br /&gt;    var mutable = mutableList.collect(squared);&lt;br /&gt;&lt;br /&gt;    var immutable = immutableList.collect(squared);&lt;br /&gt;&lt;br /&gt;    var lazy = mutableList.asLazy().collect(squared);&lt;br /&gt;&lt;br /&gt;    var parallel = &lt;br /&gt;            mutableList.asParallel(executor, 2).collect(squared);&lt;br /&gt;&lt;br /&gt;    var expected = &lt;em&gt;iList&lt;/em&gt;(1, 4, 9, 16, 25);&lt;br /&gt;&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, mutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, immutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, lazy.toList());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, parallel.toList());&lt;br /&gt;}&lt;/pre&gt;&lt;p&gt;Notice that Function cannot be replaced with var. This is because a lambda must be assigned to some type.&lt;/p&gt;&lt;h3&gt;Collecting from a primitive List (Java 8)&lt;/h3&gt;&lt;pre&gt;@Test&lt;br /&gt;public void collectingFromAPrimitiveListJava8()&lt;br /&gt;{&lt;br /&gt;    MutableIntList mList = IntLists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, 2, 3, 4, 5);&lt;br /&gt;    ImmutableIntList iList = IntLists.&lt;strong&gt;&lt;em&gt;immutable&lt;/em&gt;&lt;/strong&gt;.with(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    IntToIntFunction squared = i -&amp;gt; i * i;&lt;br /&gt;&lt;br /&gt;    MutableIntList mutable =&lt;br /&gt;            mList.collectInt(squared, new IntArrayList());&lt;br /&gt;&lt;br /&gt;    ImmutableIntList immutable =&lt;br /&gt;            iList.collectInt(squared, new IntArrayList())&lt;br /&gt;                    .toImmutable();&lt;br /&gt;&lt;br /&gt;    LazyIntIterable lazy =&lt;br /&gt;            mList.asLazy().collectInt(squared);&lt;br /&gt;&lt;br /&gt;    MutableIntList expected =&lt;br /&gt;            IntLists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, 4, 9, 16, 25);&lt;br /&gt;&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, mutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, immutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, lazy.toList());&lt;br /&gt;}&lt;/pre&gt;&lt;h3&gt;Collecting from a primitive List (Java 10)&lt;/h3&gt;&lt;pre&gt;@Test&lt;br /&gt;public void collectingFromAPrimitiveListJava10()&lt;br /&gt;{&lt;br /&gt;    var mutableIntList = IntLists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, 2, 3, 4, 5);&lt;br /&gt;    var immutableIntList = IntLists.&lt;strong&gt;&lt;em&gt;immutable&lt;/em&gt;&lt;/strong&gt;.with(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    IntToIntFunction squared = i -&amp;gt; i * i;&lt;br /&gt;&lt;br /&gt;    var mutable =&lt;br /&gt;            mutableIntList.collectInt(squared, new IntArrayList());&lt;br /&gt;&lt;br /&gt;    var immutable =&lt;br /&gt;            immutableIntList.collectInt(squared, new IntArrayList())&lt;br /&gt;                    .toImmutable();&lt;br /&gt;&lt;br /&gt;    var lazy = mutableIntList.asLazy().collectInt(squared);&lt;br /&gt;&lt;br /&gt;    var expected = IntLists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, 4, 9, 16, 25);&lt;br /&gt;&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, mutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, immutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, lazy.toList());&lt;br /&gt;}&lt;/pre&gt;&lt;p&gt;Notice that IntToIntFunction cannot be replaced with var. This is because a lambda must be assigned to some type.&lt;/p&gt;&lt;h3&gt;Is it possible to collect selectively?&lt;/h3&gt;&lt;p&gt;There is a method named &lt;em&gt;collectIf&lt;/em&gt; which applies a &lt;em&gt;Predicate&lt;/em&gt; first to each element, and then applies a &lt;em&gt;Function&lt;/em&gt; to each element where the &lt;em&gt;Predicate&lt;/em&gt; returned true. This method is a fused form of &lt;em&gt;select&lt;/em&gt; and &lt;em&gt;collect&lt;/em&gt;. It is also possible to just call &lt;em&gt;select&lt;/em&gt; followed by &lt;em&gt;collect&lt;/em&gt; either eagerly, lazily or in parallel.&lt;/p&gt;&lt;pre&gt;@Test&lt;br /&gt;public void collectingSelectively()&lt;br /&gt;{&lt;br /&gt;    var executor = Executors.&lt;em&gt;newWorkStealingPool&lt;/em&gt;();&lt;br /&gt;&lt;br /&gt;    var mutableList = &lt;em&gt;mList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;    var immutableList = &lt;em&gt;iList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    Function&amp;lt;Integer, Integer&amp;gt; squared = i -&amp;gt; i * i;&lt;br /&gt;    Predicate&amp;lt;Integer&amp;gt; evens = i -&amp;gt; i % 2 ==0;&lt;br /&gt;&lt;br /&gt;    var mutable = mutableList.collectIf(evens, squared);&lt;br /&gt;&lt;br /&gt;    var immutable = immutableList.collectIf(evens, squared);&lt;br /&gt;&lt;br /&gt;    var lazy1 =&lt;br /&gt;            mutableList.asLazy().collectIf(evens, squared);&lt;br /&gt;    var lazy2 =&lt;br /&gt;            mutableList.asLazy().select(evens).collect(squared);&lt;br /&gt;&lt;br /&gt;    var parallel1 =&lt;br /&gt;            mutableList.asParallel(executor, 2)&lt;br /&gt;                    .collectIf(evens, squared);&lt;br /&gt;&lt;br /&gt;    var parallel2 =&lt;br /&gt;            mutableList.asParallel(executor, 2)&lt;br /&gt;                    .select(evens).collect(squared);&lt;br /&gt;&lt;br /&gt;    var expected = &lt;em&gt;iList&lt;/em&gt;(4, 16);&lt;br /&gt;&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, mutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, immutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, lazy1.toList());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, lazy2.toList());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, parallel1.toList());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expected, parallel2.toList());&lt;br /&gt;}&lt;/pre&gt;&lt;p&gt;Notice that Function and Predicate cannot be replaced with var. This is because a lambda must be assigned to some type.&lt;/p&gt;&lt;h3&gt;APIs covered in the examples&lt;/h3&gt;&lt;ol&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#collect-org.eclipse.collections.api.block.function.Function-&quot;&gt;Collect&lt;/a&gt; (&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/MutableList.html#collect-org.eclipse.collections.api.block.function.Function-&quot;&gt;Eager&lt;/a&gt;, &lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/LazyIterable.html#collect-org.eclipse.collections.api.block.function.Function-&quot;&gt;Lazy&lt;/a&gt; and &lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/ParallelListIterable.html#collect-org.eclipse.collections.api.block.function.Function-&quot;&gt;Parallel&lt;/a&gt;) — transforms elements of a source collection to a new collection&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#collectIf-org.eclipse.collections.api.block.predicate.Predicate-org.eclipse.collections.api.block.function.Function-&quot;&gt;CollectIf&lt;/a&gt; (&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/MutableList.html#collectIf-org.eclipse.collections.api.block.predicate.Predicate-org.eclipse.collections.api.block.function.Function-&quot;&gt;Eager&lt;/a&gt;, &lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/LazyIterable.html#collectIf-org.eclipse.collections.api.block.predicate.Predicate-org.eclipse.collections.api.block.function.Function-&quot;&gt;Lazy&lt;/a&gt; and &lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/ParallelListIterable.html#collectIf-org.eclipse.collections.api.block.predicate.Predicate-org.eclipse.collections.api.block.function.Function-&quot;&gt;Parallel&lt;/a&gt;) — transforms the elements of a source collection which satisfy a given predicate to a new collection&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/impl/factory/Iterables.html#mList-T...-&quot;&gt;mList&lt;/a&gt; — Creates a MutableList&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/impl/factory/Iterables.html#iList-T-T-T-T-T-&quot;&gt;iList&lt;/a&gt; — Creates an ImmutableList&lt;/li&gt;&lt;li&gt;IntLists.mutable.&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/factory/list/primitive/MutableIntListFactory.html#with-int...-&quot;&gt;with&lt;/a&gt; — Creates a MutableIntList&lt;/li&gt;&lt;li&gt;IntLists.immutable.&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/factory/list/primitive/ImmutableIntListFactory.html#with-int...-&quot;&gt;with&lt;/a&gt; — Creates an ImmutableIntList&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#asLazy--&quot;&gt;asLazy&lt;/a&gt; — Returns a LazyIterable or LazyIntIterable&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/ListIterable.html#asParallel-java.util.concurrent.ExecutorService-int-&quot;&gt;asParallel&lt;/a&gt; — Returns a ParallelIterable&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#toList--&quot;&gt;toList&lt;/a&gt; — Converts the target Iterable into a MutableList&lt;/li&gt;&lt;li&gt;var — Local variable Type Inference included in Java 10 (&lt;a href=&quot;http://openjdk.java.net/jeps/286&quot;&gt;JEP 286&lt;/a&gt;)&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;Check out this &lt;a href=&quot;http://eclipse.github.io/eclipse-collections-kata/api-design&quot;&gt;presentation&lt;/a&gt; to learn more about the origins, design and evolution of the Eclipse Collections API. There is also a &lt;a href=&quot;https://www.youtube.com/watch?v=Xrx_407Dt-I&quot;&gt;video&lt;/a&gt; covering the slides that was recorded at an Eclipse Community Virtual Meet-up.&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/eclipse/eclipse-collections&quot;&gt;&lt;em&gt;Eclipse Collections&lt;/em&gt;&lt;/a&gt;&lt;em&gt; is open for &lt;/em&gt;&lt;a href=&quot;https://github.com/eclipse/eclipse-collections/blob/master/CONTRIBUTING.md&quot;&gt;&lt;em&gt;contributions&lt;/em&gt;&lt;/a&gt;&lt;em&gt;. If you like the library, you can let us know by starring it on GitHub.&lt;/em&gt;&lt;/p&gt;&lt;img height=&quot;1&quot; src=&quot;https://medium.com/_/stat?event=post.clientViewed&amp;amp;referrerSource=full_rss&amp;amp;postId=262a46030c49&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Thu, 05 Apr 2018 08:05:11 +0000</pubDate>
+</item>
+<item>
+	<title>EclipseCon France 2018: Check out the program!</title>
+	<guid isPermaLink="false">https://www.eclipsecon.org/france2018/news/3848 at https://www.eclipsecon.org/france2018</guid>
+	<link>https://www.eclipsecon.org/france2018/news/check-out-program</link>
+	<description>&lt;div class=&quot;field field-name-body field-type-text-with-summary field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;p&gt;The &lt;a href=&quot;https://www.eclipsecon.org/france2018/program/sessions/accepted&quot; target=&quot;_blank&quot;&gt;list version of the program&lt;/a&gt; is ready. We had a record number of submissions, and we also have a record number of talks with the addition of another room on Wednesday.&lt;/p&gt;
+
+&lt;p&gt;Thanks to the community for submitting, and to &lt;a href=&quot;https://www.eclipsecon.org/france2018/about-pc&quot; target=&quot;_blank&quot;&gt;the program committee&lt;/a&gt; for choosing the best EclipseCon France program ever.&lt;/p&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;field field-name-field-news-image field-type-image field-label-hidden&quot;&gt;&lt;div class=&quot;field-items&quot;&gt;&lt;div class=&quot;field-item even&quot;&gt;&lt;a href=&quot;https://www.eclipsecon.org/france2018/news/check-out-program&quot;&gt;&lt;img alt=&quot;&quot; class=&quot;img-responsive block-center&quot; height=&quot;250&quot; src=&quot;https://www.eclipsecon.org/france2018/sites/default/files/styles/solstice_news_-_default_-_thumbnail/public/news/laptop_stickers.jpg?itok=YXUG_MBO&quot; width=&quot;250&quot; /&gt;&lt;/a&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;</description>
+	<pubDate>Wed, 04 Apr 2018 14:49:09 +0000</pubDate>
+</item>
+<item>
+	<title>itemis: New Project Wizard: einfach mit Xtext 2.14 generieren</title>
+	<guid isPermaLink="true">https://blogs.itemis.com/en/new-project-wizard-einfach-mit-xtext-2-14-generieren</guid>
+	<link>https://blogs.itemis.com/en/new-project-wizard-einfach-mit-xtext-2-14-generieren</link>
+	<description>&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Wer DSLs mit Eclipse &lt;/span&gt;&lt;a href=&quot;https://github.com/eclipse/xtext&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Xtext&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; umsetzt, profitiert davon, dass die notwendige Infrastruktur automatisiert aus der Grammatik erzeugt wird. Mit minimalem Aufwand entsteht somit eine Umgebung, in der alles gegeben ist, um direkt mit der eigenen DSL durchzustarten. Eine Grammatik und zwei Knöpfe später startet man voller Vorfreude Eclipse und fragt sich zunächst, welche Art von Projekt zu erstellen ist. Diese Frage beantwortet Xtext bisher nicht und der Entwickler hat die Wahl. &lt;/span&gt;&lt;/p&gt;  
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Ist das Projekt erzeugt, stellt sich nun die Frage, wie die brandneue DSL genutzt werden kann... Wie war nochmal die Dateiendung? Ist das jetzt eine Textdatei? Gibt es keinen Wizard? Oh, ein Beispiel wäre super! Aber wo finde ich das? &lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;Wer kennt diese Situation nicht?&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Bisher war das Erstellen eines Wizards Handarbeit – immer wieder. Dabei sind die Anforderungen an Wizards kein Hexenwerk und die Umsetzung auch nicht. Was man sich wünscht, ist ein Wizard der eindeutig zeigt, wie ein spezielles Projekt für unsere DSL zu erzeugen ist, das im besten Fall sogar bereits Beispiele enthält. Das lässt sich doch generieren, oder? Klar! Und in &lt;/span&gt;&lt;a href=&quot;https://projects.eclipse.org/projects/modeling.tmf.xtext&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Xtext 2.14&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; haben wir genau diese Möglichkeit geschaffen.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Auch wenn diese Version erst mit Eclipse Photon im Juni 2018 erscheinen wird, möchten wir hier gerne schon mal einen kleinen Einblick ermöglichen.&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Erzeugen des Wizards&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Direkt nach dem Anlegen eines neuen Xtext-Projektes enthält das Projekt eine &lt;code&gt;mwe2&lt;/code&gt;-Datei, die definiert, was generiert wird. Diese enthält den folgenden Abschnitt:&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;language = StandardLanguage {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    name = &quot;org.xtext.example.mydsl.MyDsl&quot;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    fileExtensions = &quot;mydsl&quot;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    serializer = {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;        generateStub = false&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    }&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    validator = {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;        // composedCheck =&lt;/span&gt; &lt;span style=&quot;font-weight: 400;&quot;&gt;&quot;org.eclipse.xtext.validation.NamesAreUniqueValidator&quot;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    }&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; }&lt;/span&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Um den Wizard zu generieren, ist dieser Abschnitt um ein &lt;a href=&quot;https://github.com/eclipse/xtext-core/blob/master/org.eclipse.xtext.xtext.generator/src/org/eclipse/xtext/xtext/generator/ui/projectWizard/TemplateProjectWizardFragment.xtend&quot;&gt;&lt;code&gt;TemplateProjectWizardFragment&lt;/code&gt;&lt;/a&gt; für den Wizard zu erweitern.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;language = StandardLanguage {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    name = &quot;org.xtext.example.mydsl.MyDsl&quot;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    fileExtensions = &quot;mydsl&quot;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    serializer = {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;        generateStub = false&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    }&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    validator = {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;        // composedCheck =&lt;/span&gt; &lt;span style=&quot;font-weight: 400;&quot;&gt;&quot;org.eclipse.xtext.validation.NamesAreUniqueValidator&quot;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    }&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    &lt;/span&gt;&lt;strong&gt;newTemplateProjectWizardForEclipse = {&lt;/strong&gt;&lt;strong&gt;&lt;br /&gt;&lt;/strong&gt;&lt;strong&gt;        generate = true&lt;/strong&gt;&lt;strong&gt;&lt;br /&gt;&lt;/strong&gt;&lt;strong&gt;    }&lt;/strong&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;}&lt;/span&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Wenn nun die Generierung wie üblich über &lt;code&gt;Run As -&amp;gt; MWE2 Workflow&lt;/code&gt; angestoßen wird, dann werden nicht nur der Editor, die Autocompletion usw. generiert, sondern eben auch alle notwendigen Extensions für den Wizard.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Im UI-Projekt der Sprache wird ein Package &lt;/span&gt;&lt;code&gt;wizard&lt;/code&gt; generiert, das vor allem eine Datei &lt;code&gt;MyDslProjectTemplateProvider.xtend&lt;/code&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; enthält (wobei der Name der Datei von dem Namen der Sprache abhängt). In dieser Datei wird der Inhalt des Wizards definiert. Weitere Konfigurationen sind normalerweise nicht nötig.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;Wenn man nach der Generierung direkt den Runtime-Workspace öffnet, ist es möglich, neue Projekte anzulegen, indem der neue Wizard geöffnet wird – zum Beispiel über das Hauptmenü über&lt;code&gt; File -&amp;gt; New -&amp;gt; Project&lt;/code&gt;. Hier gibt es eine Kategorie &lt;code&gt;MyDsl&lt;/code&gt; mit einem &lt;code&gt;MyDsl Project&lt;/code&gt; (wiederum vom Namen der Spache abhängig). &lt;br /&gt;Sollten diese Namen unpassend sein, lässt sich das natürlich mit Standard-Eclipse-Mitteln in der &lt;code&gt;plugin.xml&lt;/code&gt; anpassen. Für diejenigen, die den Wizard in ihre bestehende Sprache einbauen möchten und schon verzweifelt nach den neuen Einträgen in der &lt;code&gt;plugin.xml&lt;/code&gt; suchen noch ein Tipp: Xtext generiert nach dem ersten Generatorlauf nicht mehr direkt in die &lt;code&gt;plugin.xml&lt;/code&gt; sondern in die &lt;code&gt;plugin.xml_gen&lt;/code&gt; und das Zusammenführen ist Handarbeit.&lt;br /&gt;&lt;br /&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;img alt=&quot;OpenNewProjectWizard&quot; height=&quot;423&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/OpenNewProjectWizard.png?t=1522852283713&amp;amp;width=602&amp;amp;height=423&amp;amp;name=OpenNewProjectWizard.png&quot; style=&quot;width: 602px; margin-top: 0px; margin-bottom: 0px;&quot; width=&quot;602&quot; /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Auf der ersten Seite lässt sich wie üblich ein Projektname und eine Location festlegen.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;img alt=&quot;NewProjectWizardSeite1&quot; height=&quot;423&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/NewProjectWizardSeite1.png?t=1522852283713&amp;amp;width=597&amp;amp;height=423&amp;amp;name=NewProjectWizardSeite1.png&quot; style=&quot;width: 597px; margin-top: 0px; margin-bottom: 0px;&quot; width=&quot;597&quot; /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Die zweite Seite bietet eine Auswahl mit allen definierten Templates an, aus der der Benutzer auswählen kann. Per default wird lediglich ein “Hello World”-Template zur Verfügung gestellt.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;img alt=&quot;NewProjectWizardTemplateSelection&quot; height=&quot;423&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/NewProjectWizardTemplateSelection.png?t=1522852283713&amp;amp;width=597&amp;amp;height=423&amp;amp;name=NewProjectWizardTemplateSelection.png&quot; style=&quot;width: 597px; margin-top: 0px; margin-bottom: 0px;&quot; width=&quot;597&quot; /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Die folgende, optionale Seite bietet Möglichkeiten, das Template zu konfigurieren. Das ist im Falle des “Hello World”-Beispiels natürlich auch nur als solches zu verstehen.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;img alt=&quot;NewProjectWizardTemplateConfiguration&quot; height=&quot;424&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/NewProjectWizardTemplateConfiguration.png?t=1522852283713&amp;amp;width=599&amp;amp;height=424&amp;amp;name=NewProjectWizardTemplateConfiguration.png&quot; style=&quot;width: 599px; margin-top: 0px; margin-bottom: 0px;&quot; width=&quot;599&quot; /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Wird der Wizard mit “Finish” beendet, wird ein Projekt erzeugt, dem bereits die Xtext-Nature zugewiesen wurde und das ein “Hello World” der erzeugten DSL enthält.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;img alt=&quot;GeneratedProject-1&quot; height=&quot;230&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/GeneratedProject-1.png?t=1522852283713&amp;amp;width=601&amp;amp;height=230&amp;amp;name=GeneratedProject-1.png&quot; style=&quot;width: 601px; margin-top: 0px; margin-bottom: 0px;&quot; width=&quot;601&quot; /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Definieren eigener Templates&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Um das “Hello World” an die eigene Sprache anzupassen oder weitere Templates hinzuzufügen, muss der &lt;code&gt;TemplateProvider&lt;/code&gt;, eine Klasse welche &lt;a href=&quot;https://github.com/eclipse/xtext-eclipse/blob/master/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/wizard/template/IProjectTemplateProvider.java&quot;&gt;&lt;code&gt;IProjectTemplateProvider&lt;/code&gt;&lt;/a&gt; implementiert, angepasst werden. Dieser liefert mit der Methode &lt;/span&gt;&lt;code&gt;getProjectTemplates &lt;/code&gt;eine Liste mit allen verfügbaren Templates für die Sprache zurück. Per default sieht die Implementierung wie folgt aus:&lt;br /&gt;&lt;br /&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;class MyDslProjectTemplateProvider implements&lt;/span&gt; &lt;span style=&quot;font-weight: 400;&quot;&gt;IProjectTemplateProvider {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    override getProjectTemplates() {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;        #[new HelloWorldProject]&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    }&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;}&lt;/span&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;br /&gt;Das Hinzufügen eines weiteren Templates bedeutet also das Hinzufügen einer neuen Instanz zu dieser Liste. Zum Beispiel:&lt;br /&gt;&lt;br /&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;class MyDslProjectTemplateProvider implements&lt;/span&gt; &lt;span style=&quot;font-weight: 400;&quot;&gt;IProjectTemplateProvider {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    override getProjectTemplates() {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;        #[new HelloWorldProject, new TestProject]&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    }&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;}&lt;/span&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Das neue Projekt muss eine Subklasse von &lt;/span&gt;&lt;a href=&quot;https://github.com/eclipse/xtext-eclipse/blob/master/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/wizard/template/AbstractProjectTemplate.java&quot;&gt;&lt;code&gt;AbstractProjectTemplate&lt;/code&gt;&lt;/a&gt; sein. Am einfachsten lässt sich eine solche durch die Nutzung der Active Annotation &lt;a href=&quot;https://github.com/eclipse/xtext-eclipse/blob/master/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/wizard/template/ProjectTemplate.xtend&quot;&gt;&lt;code&gt;ProjectTemplate&lt;/code&gt;&lt;/a&gt; erzeugen. Diese Annotation bietet die Möglichkeit, den Namen, ein Icon sowie einen Beschreibungstext für das Template festzulegen. Diese regeln die Darstellung des Templates in der Liste der verfügbaren Templates im Wizard.&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Man würde also in etwa so beginnen:&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;@ProjectTemplate(label=&quot;Test&quot;, icon=&quot;project_template.png&quot;,&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    description=&quot;&amp;lt;p&amp;gt;&amp;lt;b&amp;gt;Test&amp;lt;/b&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;This is a test project.&amp;lt;/p&amp;gt;&quot;)&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;final class HelloWorldProject {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;}&lt;/span&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Hier ist zumindest die Methode &lt;/span&gt;&lt;code&gt;generateProjects(IProjectGenerator)&lt;/code&gt; zu implementieren. Der übergebene &lt;code&gt;IProjectGenerator&lt;/code&gt; enthält dabei eine einzelne Methode &lt;code&gt;generate(ProjectFactory)&lt;/code&gt;, welche man nun beliebig oft aufrufen kann, um beim Beenden des Wizards Eclipse-Projekte anzulegen. Dabei liefert Xtext bereits verschiedene Implementierungen der &lt;code&gt;ProjectFactory&lt;/code&gt; mit, um &lt;a href=&quot;https://github.com/eclipse/xtext-eclipse/blob/master/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/util/JavaProjectFactory.java&quot;&gt;Java&lt;/a&gt;-, &lt;a href=&quot;https://github.com/eclipse/xtext-eclipse/blob/master/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/util/PluginProjectFactory.java&quot;&gt;Plugin&lt;/a&gt;- oder &lt;a href=&quot;https://github.com/eclipse/xtext-eclipse/blob/master/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/util/FeatureProjectFactory.xtend&quot;&gt;Featureprojekte&lt;/a&gt; zu erzeugen. Eigene Implementierungen sind hier natürlich denkbar.&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Ein Aufruf, um ein einfaches Pluginprojekt mit einer Datei zu erzeugen, kann dann zum Beispiel so aussehen:&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; generator.generate(new PluginProjectFactory =&amp;gt; [&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    projectName = projectInfo.projectName&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    location = projectInfo.locationPath&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    projectNatures += #[JavaCore.NATURE_ID, &lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                        &quot;org.eclipse.pde.PluginNature&quot;, &lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                        XtextProjectHelper.NATURE_ID]&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    builderIds += JavaCore.BUILDER_ID&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    folders += &quot;src&quot;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    addFile('''src/Model.mydsl''', '''&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;        Hello World!&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    ''')&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;])&lt;/span&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Zusätzliche Aufrufe von &lt;/span&gt;&lt;code&gt;generate &lt;/code&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;erzeugen weitere Projekte, während weitere Aufrufe von &lt;/span&gt;&lt;code&gt;addFile &lt;/code&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;zusätzliche Dateien in den Projekten erzeugen.&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;UI zur Parametrisierung&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Um nicht nur komplett statische Templates zu liefern, ist es möglich, mit der API ein einfaches UI zu definieren. Dieses bekommt der Nutzer präsentiert und kann so Parameter des Templates festlegen.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Die API bietet dabei per default die Möglichkeit, Checkboxen, Textfelder und Comboboxen zu definieren. Um Übersicht zu schaffen, können diese noch mit Group-Elementen gruppiert werden. &lt;/span&gt;&lt;/p&gt; Die Klasse 
+&lt;a href=&quot;https://github.com/eclipse/xtext-eclipse/blob/master/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/wizard/template/AbstractProjectTemplate.java&quot;&gt;&lt;code&gt;AbstractProjectTemplate&lt;/code&gt;&lt;/a&gt; liefert hierfür entsprechende Methoden, mit denen das Interface definiert werden kann. Eine Checkbox wird durch den Aufruf von 
+&lt;code&gt;check&lt;/code&gt; erzeugt. Wenn diese nun einer Instanzvariablen zugewiesen wird, kann diese in der 
+&lt;code&gt;generateprojects&lt;/code&gt;-Methode genutzt werden, um den vom Benutzer ausgewählten Wert zu ermitteln. Zum Beispiel könnte mit folgendem Code eine Checkbox erzeugt werden, welche die Generierung eine Projektes nach Auswahl des Users unterdrückt:
+&lt;br /&gt;
+&lt;br /&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;@ProjectTemplate(label=&quot;Test&quot;, icon=&quot;project_template.png&quot;,&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    description=&quot;&amp;lt;p&amp;gt;&amp;lt;b&amp;gt;Test&amp;lt;/b&amp;gt;&amp;lt;/p&amp;gt;&amp;lt;p&amp;gt;This is a test project.&amp;lt;/p&amp;gt;&quot;)&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;final class TestProject {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    val generateHello = check(&quot;Generate Hello&quot;, true)&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    override generateProjects(IProjectGenerator generator) {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;        if (generateHello.value) {&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;            generator.generate(new PluginProjectFactory =&amp;gt; [&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                projectName = projectInfo.projectName&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                location = projectInfo.locationPath&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                projectNatures += #[JavaCore.NATURE_ID,&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                                    &quot;org.eclipse.pde.PluginNature&quot;,&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                                    XtextProjectHelper.NATURE_ID]&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                builderIds += JavaCore.BUILDER_ID&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                folders += &quot;src&quot;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                addFile('''src/Model.mydsl''', '''&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                    Hello World!&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;                ''')&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;            ])&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;        }&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;    }&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;}&lt;/span&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Textfelder und Comboboxen lassen sich mit den Methoden &lt;/span&gt;&lt;code&gt;text&lt;/code&gt;und &lt;code&gt;combo&lt;/code&gt; analog anlegen und verwenden.&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Sollte ein noch ausgefeilterer Wizard benötigt werden, können die Methoden &lt;/span&gt;&lt;code&gt;updateVariables&lt;/code&gt; und &lt;code&gt;validate&lt;/code&gt; wie im &quot;Hello World&quot;-Beispiel überschrieben werden. Diese werden nach jeder User-Interaktion mit dem UI aufgerufen.&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;code&gt;updateVariables&lt;/code&gt; kann verwendet werden, um Widgets zu manipulieren – zum Beispiel um bestimmte Element zu aktivieren oder deaktivieren, wenn der Benutzer einen Wert im Wizard verändert.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;code&gt;validate&lt;/code&gt; hingegen kann einen Status zurückliefern, um Eingabefehler vom User im Wizard als Fehlermeldung zu melden.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Templates per Plugin beisteuern&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Die Project Templates werden über einen Extension Point registriert. Zunächst einmal bekommt man als DSL-Entwickler davon nichts mit. Interessant wird dies erst, wenn das eigene Plugin durch Dritte erweitert wird. Diese können dann einfach weitere Implementierungen von &lt;a href=&quot;https://github.com/eclipse/xtext-eclipse/blob/master/org.eclipse.xtext.ui/src/org/eclipse/xtext/ui/wizard/template/IProjectTemplateProvider.java&quot;&gt;&lt;code&gt;IProjectTemplateProvider&lt;/code&gt;&lt;/a&gt; beisteuern. Hier ist es nötig, die implementierende Klasse zu referenzieren und den Grammatiknamen, zu dem man contributet, anzugeben. Über diesen Namen wird entschieden, in welchem Wizard die Templates angezeigt werden. Das von Xtext generierte Beispiel sieht in der &lt;code&gt;plugin.xml&lt;/code&gt; dann wie folgt aus.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&amp;lt;extension point=&quot;org.eclipse.xtext.ui.projectTemplate&quot;&amp;gt;&lt;br /&gt;    &amp;lt;projectTemplateProvider&lt;br /&gt;            class=&quot;org.xtext.example.mydsl.ui.wizard.MyDslProjectTemplateProvider&quot;&lt;br /&gt;            grammarName=&quot;org.xtext.example.mydsl.MyDsl&quot;&amp;gt;&lt;br /&gt;    &amp;lt;/projectTemplateProvider&amp;gt;&lt;br /&gt;&amp;lt;/extension&amp;gt;&lt;br /&gt;&lt;/span&gt;&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Wer jetzt nicht mehr auf Eclipse Photon warten kann, dem sei die nächtliche Update-Site &lt;code&gt;http://download.eclipse.org/modeling/tmf/xtext/updates/composite/latest/&lt;/code&gt; ans Herz gelegt. Einfach das neueste und heißeste Xtext installieren und loslegen!&lt;/span&gt;&lt;/p&gt;  
+&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;https://track.hubspot.com/__ptq.gif?a=761475&amp;amp;k=14&amp;amp;r=https%3A%2F%2Fblogs.itemis.com%2Fen%2Fnew-project-wizard-einfach-mit-xtext-2-14-generieren&amp;amp;bu=https%253A%252F%252Fblogs.itemis.com&amp;amp;bvt=rss&quot; style=&quot;width: 1px!important;&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Wed, 04 Apr 2018 14:20:00 +0000</pubDate>
+	<author>adeutsch@itemis.de (Arne Deutsch)</author>
+</item>
+<item>
+	<title>Eclipse Announcements: Winners of Open IoT Challenge 4.0 Demonstrate How Open Source Accelerates Innovation</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/hn6I6OZ6roc/20180404_iotchallenge_winners2018.php</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/hn6I6OZ6roc/20180404_iotchallenge_winners2018.php</link>
+	<description>Eclipse IoT is pleased to announce the winners of the fourth annual Open IoT Challenge!&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/hn6I6OZ6roc&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Wed, 04 Apr 2018 14:00:00 +0000</pubDate>
+</item>
+<item>
+	<title>Eclipse Announcements: EclipseCon France 2018 Program Announced</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/MU3P8PQbswc/accepted</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/MU3P8PQbswc/accepted</link>
+	<description>See the list of accepted sessions, and register now for the lowest price. We'll see you June 13 - 14 in Toulouse.&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/MU3P8PQbswc&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Tue, 03 Apr 2018 14:00:00 +0000</pubDate>
+</item>
+<item>
+	<title>Eclipse Announcements: Voting for the Jakarta EE logo is now open!</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/c7bkDM79IuE/viewform</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/c7bkDM79IuE/viewform</link>
+	<description>Voting will be conducted using a ranked poll. To vote, simply rank the final shortlist of logos in order of preference.&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/c7bkDM79IuE&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Thu, 29 Mar 2018 22:45:00 +0000</pubDate>
+</item>
+<item>
+	<title>JBoss Tools Team: JBoss Tools 4.5.3.AM3 for Eclipse Oxygen.3</title>
+	<guid isPermaLink="true">https://tools.jboss.org/blog/4.5.3.am3-for-oxygen.3.html</guid>
+	<link>https://tools.jboss.org/blog/4.5.3.am3-for-oxygen.3.html</link>
+	<description>&lt;div&gt;&lt;div id=&quot;preamble&quot;&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Happy to announce 4.5.3.AM3 (Developer Milestone 3) build for Eclipse Oxygen.3.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Downloads available at &lt;a href=&quot;https://tools.jboss.org/downloads/jbosstools/oxygen/4.5.3.AM3.html&quot;&gt;JBoss Tools 4.5.3 AM3&lt;/a&gt;.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect1&quot;&gt;
+      &lt;h2 id=&quot;what-is-new&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#what-is-new&quot;&gt;&lt;/a&gt;What is New?&lt;/h2&gt;
+      &lt;div class=&quot;sectionbody&quot;&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Full info is at &lt;a href=&quot;https://tools.jboss.org/documentation/whatsnew/jbosstools/4.5.3.AM3.html&quot;&gt;this page&lt;/a&gt;. Some highlights are below.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;openshift&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#openshift&quot;&gt;&lt;/a&gt;OpenShift&lt;/h3&gt;
+      &lt;div class=&quot;sect3&quot;&gt;
+      &lt;h4 id=&quot;cdk-and-minishift-server-adapter-runtime-download&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#cdk-and-minishift-server-adapter-runtime-download&quot;&gt;&lt;/a&gt;CDK and Minishift Server Adapter runtime download&lt;/h4&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;When working with both CDK and upstream Minishift, you needed to have previously downloaded the CDK
+      or Minishift binary. It is now possible to download the runtime to a specific folder when you create
+      the server adapter.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Let’s see an example with the CDK server adapter.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;From the &lt;strong&gt;Servers&lt;/strong&gt; view, select the new Server menu item and enter cdk in the filter:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Select Red Hat Container Development Kit 3.2+&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard1&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard1.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Click the &lt;strong&gt;Next&lt;/strong&gt; button:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard3&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard3.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;In order to download the runtime, click the &lt;strong&gt;Download and install runtime…​&lt;/strong&gt; link:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard4&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard4.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Select the version of the runtime you want to download&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard5&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard5.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Click the &lt;strong&gt;Next&lt;/strong&gt; button:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard6&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard6.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;You need an account to download the CDK. If you already had configured credentials, select the one you
+      want to use. If you didn’t, click the &lt;strong&gt;Add&lt;/strong&gt; button to add your credentials.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard7&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard7.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Click the &lt;strong&gt;Next&lt;/strong&gt; button. Your credentials will be validated, and upon success, you must accept
+      the license agreement:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard8&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard8.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Accept the license agreement and click the &lt;strong&gt;Next&lt;/strong&gt; button:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard9&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard9.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;You can choose the folder where you want the runtime to be installed. Once you’ve set it,
+      click the &lt;strong&gt;Finish&lt;/strong&gt; button:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The download of the runtime will be started and you should see the progression on the server adapter
+      wizard:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard10&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard10.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Once the download is completed, you will notice that the &lt;strong&gt;Minishift Binary&lt;/strong&gt; and &lt;strong&gt;Username&lt;/strong&gt; fields have been filled:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard11&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard11.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Click the &lt;strong&gt;Finish&lt;/strong&gt; button to create the server adapter.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Please note that if it’s the first time you install CDK, you must perform an initialization. In the &lt;strong&gt;Servers&lt;/strong&gt; view, right click
+      the server and select the &lt;strong&gt;Setup CDK&lt;/strong&gt; menu item:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard12&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard12.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;cdk server adapter wizard13&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/openshift/images/cdk-server-adapter-wizard13.png&quot; width=&quot;600&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;hibernate-tools&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#hibernate-tools&quot;&gt;&lt;/a&gt;Hibernate Tools&lt;/h3&gt;
+      &lt;div class=&quot;sect3&quot;&gt;
+      &lt;h4 id=&quot;hibernate-runtime-provider-updates&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#hibernate-runtime-provider-updates&quot;&gt;&lt;/a&gt;Hibernate Runtime Provider Updates&lt;/h4&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;A number of additions and updates have been performed on the available Hibernate runtime  providers.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect4&quot;&gt;
+      &lt;h5 id=&quot;new-hibernate-5-3-runtime-provider&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#new-hibernate-5-3-runtime-provider&quot;&gt;&lt;/a&gt;New Hibernate 5.3 Runtime Provider&lt;/h5&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;With beta releases available in the Hibernate 5.3 stream, the time was right to make available a corresponding Hibernate 5.3 runtime provider. This runtime provider incorporates Hibernate Core version 5.3.0.Beta2 and Hibernate Tools version 5.3.0.Beta1.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot; style=&quot;text-align: center;&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;hibernate 5 3&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/hibernate/images/4.5.3.AM3/hibernate_5_3.png&quot; width=&quot;381&quot; /&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;title&quot;&gt;Figure 1. Hibernate 5.3 is available&lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect4&quot;&gt;
+      &lt;h5 id=&quot;other-runtime-provider-updates&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#other-runtime-provider-updates&quot;&gt;&lt;/a&gt;Other Runtime Provider Updates&lt;/h5&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The Hibernate 5.0 runtime provider now incorporates Hibernate Core version 5.0.12.Final and Hibernate Tools version 5.0.6.Final.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The Hibernate 5.1 runtime provider now incorporates Hibernate Core version 5.1.12.Final and Hibernate Tools version 5.1.7.Final.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The Hibernate 5.2 runtime provider now incorporates Hibernate Core version 5.2.15.Final and Hibernate Tools version 5.2.10.Final.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect2&quot;&gt;
+      &lt;h3 id=&quot;fuse-tooling&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#fuse-tooling&quot;&gt;&lt;/a&gt;Fuse Tooling&lt;/h3&gt;
+      &lt;div class=&quot;sect3&quot;&gt;
+      &lt;h4 id=&quot;fuse-ignite-technical-extension-templates&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#fuse-ignite-technical-extension-templates&quot;&gt;&lt;/a&gt;Fuse Ignite Technical Extension templates&lt;/h4&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The existing template for &quot;Custom step using a Camel Route&quot; has been updated to work with Fuse 7 Tech Preview 4.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Two new templates have been added:
+      - Custom step using Java Bean
+      - Custom connector&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;New Fuse Ignite wizard with 3 options&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/fusetools/images/igniteExtensionWizard10.3.0.AM3.png&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect3&quot;&gt;
+      &lt;h4 id=&quot;improvements-of-the-wizard-to-create-a-fuse-integration-project&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#improvements-of-the-wizard-to-create-a-fuse-integration-project&quot;&gt;&lt;/a&gt;Improvements of the wizard to create a Fuse Integration project&lt;/h4&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;The creation wizard provides better guidance for the targeted deployment environment:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;New Fuse Integration Project wizard page to select environment&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/fusetools/images/newFuseIntegrationWizard-environment.png&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;More place is available to choose the templates and they are now filtered based on the targeted environment:&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;New Fuse Integration Project wizard page to select templates&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/fusetools/images/newFuseIntegrationWizard-templates.png&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;It also points out to other places to find different examples for advanced users (see the link at the bottom of the previous screenshot).&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect3&quot;&gt;
+      &lt;h4 id=&quot;camel-rest-dsl-editor-technical-preview&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#camel-rest-dsl-editor-technical-preview&quot;&gt;&lt;/a&gt;Camel Rest DSL editor (Technical preview)&lt;/h4&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Camel is providing a Rest DSL to help the integration through Rest endpoints. Fuse Tooling is now providing a new tab in read-only mode to visualize the Rest endpoints defined.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;imageblock&quot;&gt;
+      &lt;div class=&quot;content&quot;&gt;
+      &lt;img alt=&quot;Rest DSL editor tab in read-only mode&quot; src=&quot;https://tools.jboss.org/documentation/whatsnew/fusetools/images/restViewer.png&quot; /&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;It is currently in Tech Preview and needs to be activated in Window → Preferences → Fuse Tooling → Editor → Enable Read Only Tech preview REST DSL tab.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Work is still ongoing and feedback is very welcome on this new feature, you can comment on &lt;a href=&quot;https://issues.jboss.org/browse/FUSETOOLS-1287&quot;&gt;this JIRA epic&lt;/a&gt;.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;sect3&quot;&gt;
+      &lt;h4 id=&quot;dozer-upgrade-and-migration&quot;&gt;&lt;a class=&quot;anchor&quot; href=&quot;http://tools.jboss.org/blog/news.atom#dozer-upgrade-and-migration&quot;&gt;&lt;/a&gt;Dozer upgrade and migration&lt;/h4&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;When upgrading from Camel &amp;lt; 2.20 to Camel &amp;gt; 2.20, the Dozer dependency has been upgraded to a version not backward-compatible
+      If you open a Data transformation based on Dozer in Fuse Tooling, it will propose to migrate the file used for the transformation (technically changing the namespace). It allow to continue to use the Data Transformation editor and have - in most cases - the Data Transformation working at runtime with Camel &amp;gt; 2.20.&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Enjoy!&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;paragraph&quot;&gt;
+      &lt;p&gt;Jeff Maury&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;/div&gt;&lt;/div&gt;</description>
+	<pubDate>Wed, 28 Mar 2018 15:15:31 +0000</pubDate>
+</item>
+<item>
+	<title>Eclipse Announcements: Three days left to complete the Jakarta EE Survey!</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/Nw4e_8orxX0/jakartaec</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/Nw4e_8orxX0/jakartaec</link>
+	<description>One week left to share your insights on Java EE and help shape the future of Jakarta EE.&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/Nw4e_8orxX0&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Tue, 27 Mar 2018 12:10:00 +0000</pubDate>
+</item>
+<item>
+	<title>Leo Ufimtsev: Eclipse + Flatpak Quick-start guide</title>
+	<guid isPermaLink="false">http://coffeeorientedprogramming.wordpress.com/?p=538</guid>
+	<link>https://coffeeorientedprogramming.wordpress.com/2018/03/26/eclipse-flatpak-quick-start-guide/</link>
+	<description>&lt;p&gt;Today I’m experimenting with the Eclipse to Flatpak port that our team has been working on.&lt;/p&gt;
+&lt;p&gt;To do so, I had to learn Flatpak.  It only took 10 minutes to learn the basics needed to survive. I.e adding/listing Flapack repos, installing &amp;amp; removing packages.&lt;/p&gt;
+&lt;h3&gt;Flatpack basics:&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;Flatpak is basically a package management system like yum/dnf/apk-get + version defined container for running gui apps.&lt;/li&gt;
+&lt;li&gt;Flatpak word does not contain a ‘c’. &lt;em&gt;(I was wondering why flatpack could not be found on my system).&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;(Most?) of flatpak can be used via Software Center GUI, but I prefer the command line version as I need to manage repos.&lt;/li&gt;
+&lt;li&gt;The command line has very good &lt;strong&gt;tab-completion &lt;/strong&gt;I’ve litereley figured things out by pressing tab when ever I wonder what argument to type next.&lt;/li&gt;
+&lt;li&gt;Flatpak is already installed on recent Fedora builds, but by default it has no repositories to feed from. You can add the flathub by opening it from here:&lt;br /&gt;
+&lt;a href=&quot;https://flatpak.org/setup/Fedora/&quot;&gt;https://flatpak.org/setup/Fedora/&lt;/a&gt;&lt;br /&gt;
+To verify that you’ve added the repo, you can list repos via:&lt;p&gt;&lt;/p&gt;
+&lt;pre class=&quot;brush: plain; title: ; notranslate&quot;&gt;flatpak remote-list
+&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;To list available packages:
+&lt;pre class=&quot;brush: plain; title: ; notranslate&quot;&gt;flatpak remote-ls
+&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;To install these: (e.g I tested with Zotero)
+&lt;pre class=&quot;brush: plain; title: ; notranslate&quot;&gt;flatpak install org.zotero.Zotero
+flatpak install flathub org.zotero.Zotero  #if you want to specify which repo to install from
+&lt;/pre&gt;
+&lt;/li&gt;
+&lt;li&gt;To remove a package:
+&lt;pre class=&quot;brush: plain; title: ; notranslate&quot;&gt;flatpak uninstall org.zotero.Zotero
+&lt;/pre&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h3&gt;Eclipse in flatpak&lt;/h3&gt;
+&lt;p&gt;Now I went a head and fidlded around with using Eclipse from Flatpak.&lt;br /&gt;
+Eclipse comes in it’s own repository, &lt;a href=&quot;https://fedorapeople.org/~mbooth/flatpak/index.html&quot; rel=&quot;noopener&quot; target=&quot;_blank&quot;&gt;as document by Mat Booth&lt;/a&gt;.&lt;br /&gt;
+To set things up:&lt;/p&gt;
+&lt;pre class=&quot;brush: plain; title: ; notranslate&quot;&gt;# Add the 'eclipse' repo. 
+flatpak remote-add --if-not-exists eclipse https://fedorapeople.org/~mbooth/flatpak/eclipse.flatpakrepo
+
+# Btw, if you want to delete a repo in the future, it's easy:
+flatpak remote-delete eclipse     #again, tab completion is your friend.
+
+# To see what's in Mat's eclipse repo, you can list it's content:
+flatpak remote-ls eclipse
+  org.eclipse.Committers   # I'm a committer, so I'm gonna go with this version.
+  org.eclipse.Cpp 
+  org.eclipse.Java 
+
+flatpak install eclipse org.eclipse.Committers  #this asks if you want to install gnome 3.24 run time. Say yes.
+
+&lt;/pre&gt;
+&lt;p&gt;Now you can run eclipse either via overviews or via command:&lt;/p&gt;
+&lt;pre class=&quot;brush: plain; title: ; notranslate&quot;&gt;flatpak run org.eclipse.Committers
+
+# or with environment variable:
+YOUR_ENV_VAR=VALUE flatpak run org.eclipse.Committers
+&lt;/pre&gt;
+&lt;p&gt;And voila, Eclipse is up and running:&lt;br /&gt;
+&lt;img alt=&quot;Eclipse in a flatpak&quot; class=&quot;alignnone size-full wp-image-539&quot; src=&quot;https://coffeeorientedprogramming.files.wordpress.com/2018/03/eclipse-in-a-flatpak.png?w=680&quot; /&gt;&lt;/p&gt;
+&lt;h3&gt;Also useful:&lt;/h3&gt;
+&lt;pre class=&quot;brush: plain; title: ; notranslate&quot;&gt;# look for stuff in your flatpak
+flatpak search vlc
+
+# Update packages in the future:
+flatpack update
+
+# list what's installed
+flatpak list
+flatpak list --app #only list apps.
+
+&lt;/pre&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;h2&gt;References:&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;Good quick start: &lt;a href=&quot;http://docs.flatpak.org/en/latest/using-flatpak.html&quot;&gt;http://docs.flatpak.org/en/latest/using-flatpak.html&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Fedora mag:&lt;br /&gt;
+&lt;a href=&quot;https://fedoramagazine.org/getting-started-flatpak/&quot;&gt;https://fedoramagazine.org/getting-started-flatpak/&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://fedoramagazine.org/install-flathub-apps-fedora/&quot;&gt;https://fedoramagazine.org/install-flathub-apps-fedora/&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://fedoramagazine.org/explore-flatpak-fedora-24/&quot; rel=&quot;nofollow&quot;&gt;https://fedoramagazine.org/explore-flatpak-fedora-24/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</description>
+	<pubDate>Mon, 26 Mar 2018 19:22:56 +0000</pubDate>
+</item>
+<item>
+	<title>Mike Milinkovich: On Complexity and Good Intentions</title>
+	<guid isPermaLink="false">http://mmilinkov.wordpress.com/?p=1444</guid>
+	<link>https://mmilinkov.wordpress.com/2018/03/23/on-complexity-and-good-intentions/</link>
+	<description>&lt;p&gt;We are now about six months into the process of migrating Java EE to the Eclipse Foundation, and I think we’re all learning a lot as we go. I wanted to take a moment and take stock of the scale of this project, its complexity, and where we are.&lt;/p&gt;
+&lt;p&gt;Java EE is a (roughly) twenty year old technology that is one of the world’s most successful software platforms. It powers the business critical applications that run our modern world. Millions of developers work with Java EE technologies every day. Billions of users use these systems every day. Throughout Java EE’s twenty year history it has been developed and marketed in a pretty particular way.&lt;/p&gt;
+&lt;p&gt;At the core of Java EE’s success has been an approach that enabled a multi-vendor ecosystem where enterprises had a choice of compatible implementations from a number of companies.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Java EE specifications were developed at the Java Community Process, using that JCP process where all intellectual property flowed to the Spec Lead, which was usually Sun (later Oracle). All participants in the specification process are signatories of the Java Specification Participation Agreement, which is a fairly complex legal document.&lt;/li&gt;
+&lt;li&gt;Progress and innovation in Java EE was largely governed by and driven within the constraints of this specification process.&lt;/li&gt;
+&lt;li&gt;Java EE reference implementations were, for the most part, developed by Oracle as part of the Glassfish (and related) project and made available under the CDDL and GPLv2+Classpath Exception licenses. Most of the developers were from Oracle, and the architectural vision and project management roles were performed by them. Contributors to the projects signed the Oracle Contributor Agreement that gave Oracle joint ownership of all contributions.&lt;/li&gt;
+&lt;li&gt;TCKs were developed entirely by Oracle and were highly confidential and tightly controlled. You had to sign an NDA just to get a copy of the TCK agreement if you were interested in getting access to the TCKs. The agreements were pretty dense and complex legal documents.&lt;/li&gt;
+&lt;li&gt;It was called Java EE. It had a logo that looked like a coffee cup. These trademarks were owned by Oracle and tightly controlled.&lt;/li&gt;
+&lt;li&gt;Generally speaking the big enterprises that used the technology were not involved in its evolution. For the most part, the contributors to the specs and implementations were from the Java EE platform vendors.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Together we are changing every single one of those items above. All at once. While retaining the core value of enabling compatible independent implementations in a multi-vendor ecosystem.&lt;/p&gt;
+&lt;p&gt;This is big and it is complicated.&lt;/p&gt;
+&lt;p&gt;I honestly believe that no institution other than the Eclipse Foundation could handle this task. We have the people, the skills, the history, and the knowledge of how the Java ecosystem works. The staff at the Eclipse Foundation are highly skilled and community minded professionals. Similarly, the team at Oracle, along with the folks from IBM, Payara, Red Hat, Tomitribe and the EE4J PMC are working hard to move this along. Collectively they are working their butts off to support this transition and to make Jakarta EE the platform and community of choice for the next twenty years.&lt;/p&gt;
+&lt;p&gt;Overall, I believe we’ve been pretty successful at managing the complexity, and working hard to communicate our progress and plans. We haven’t always been perfect, as case in point this past week where we had a bit of a kerfuffle on our Jakarta community mailing list. Without going into the details, I would say that the root cause of that was poor communication on my part. I didn’t do a good enough job in communicating the plans and dates for selecting the new logo. My bad.&lt;/p&gt;
+&lt;p&gt;Chris Anisczcyk, a good friend and open source community colleague of mine tweeted some months back that “Open source would be a lot more fun if everyone assumed good intentions.” With his wise words in mind, I want to say is this: what we are collectively undertaking here is a massive and complex task. Mistakes and miscommunications are going to happen. But let’s all assume good intentions, and build a community based on trust, honesty, and respect.&lt;/p&gt;</description>
+	<pubDate>Fri, 23 Mar 2018 14:18:36 +0000</pubDate>
+</item>
+<item>
+	<title>Webtools News: WTP 3.9.3 Released!</title>
+	<guid isPermaLink="false">http://www.eclipse.org/webtools/news.php#permalink180</guid>
+	<link>http://eclipse.org/webtools/releases/3.9.3</link>
+	<description>&lt;div&gt;
+      Web Tools Platform 3.9.3 has been released!  &lt;a href=&quot;https://wiki.eclipse.org/WTP_FAQ#How_do_I_install_WTP.3F&quot;&gt;Installation&lt;/a&gt; and update can be performed using the 
+      &lt;a href=&quot;http://download.eclipse.org/releases/oxygen/&quot;&gt;Oxygen Update Site&lt;/a&gt; or through the &lt;a href=&quot;https://marketplace.eclipse.org/user/nitind/listings&quot;&gt;Eclipse Marketplace&lt;/a&gt;.
+      Release 3.9.3 &lt;a href=&quot;https://www.eclipse.org/webtools/releases/3.9.3/&quot;&gt;fixes&lt;/a&gt; issues that occur in prior releases or have been reported since 3.9's release. WTP 3.9.3 is featured in the Oxygen.3
+          &lt;a href=&quot;https://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/oxygen3&quot;&gt;Eclipse IDE for Java EE Developers&lt;/a&gt;, with selected portions also included in &lt;a href=&quot;http://www.eclipse.org/downloads/compare.php&quot;&gt;other packages&lt;/a&gt;.  Adopters can download &lt;a href=&quot;http://download.eclipse.org/webtools/downloads/&quot;&gt;the R3.9.3 build itself&lt;/a&gt; directly.
+       WTP 3.9.3a is planned for mid-April, as part of Oxygen.3a and its support for this week's GA release of Java 10.&lt;/div&gt;&lt;p&gt;&lt;a href=&quot;http://www.eclipse.org/webtools/news.php#permalink180&quot;&gt;More news&lt;/a&gt;&lt;/p&gt;</description>
+	<pubDate>Thu, 22 Mar 2018 23:27:00 +0000</pubDate>
+</item>
+<item>
+	<title>Eclipse Announcements: Eclipse Newsletter | Code in Different Languages</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/MghcIiwTBdY/</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/MghcIiwTBdY/</link>
+	<description>Read what's new in the Eclipse JDT Language Server and Eclipse PDT (PHP), then learn about Eclipse Xtext and Eclipse Mita (IoT).&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/MghcIiwTBdY&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Thu, 22 Mar 2018 09:13:00 +0000</pubDate>
+</item>
+<item>
+	<title>Fabio Zadrozny: LiClipse 4.5.2 released</title>
+	<guid isPermaLink="false">tag:blogger.com,1999:blog-7855001383687474475.post-621765860818079846</guid>
+	<link>http://liclipse.blogspot.com/2018/03/liclipse-452-released.html</link>
+	<description>&lt;a href=&quot;http://www.liclipse.com/&quot;&gt;LiClipse&lt;/a&gt; 4.5.2 is now out.&lt;br /&gt;&lt;br /&gt;The major updates are related  to the upgrade of dependencies (such as &lt;a href=&quot;http://www.pydev.org/&quot;&gt;PyDev&lt;/a&gt; and &lt;a href=&quot;https://www.eclipse.org/egit/&quot;&gt;EGit&lt;/a&gt;).&lt;br /&gt;&lt;br /&gt;On the PyDev front, the major change is initial support for getting type information from .pyi files and a critical fix for the creation of the preferences page.&lt;br /&gt;&lt;br /&gt;For EGit, &lt;a href=&quot;https://wiki.eclipse.org/EGit/New_and_Noteworthy/4.11&quot;&gt;https://wiki.eclipse.org/EGit/New_and_Noteworthy/4.11&lt;/a&gt; has more details!&lt;br /&gt;&lt;br /&gt;Enjoy!</description>
+	<pubDate>Wed, 21 Mar 2018 19:03:04 +0000</pubDate>
+	<author>noreply@blogger.com (Fabio Zadrozny)</author>
+</item>
+<item>
+	<title>Holger Voormann: Eclipse Oxygen.3 IDE Improvements: Java, Gradle and PHP</title>
+	<guid isPermaLink="false">http://eclipsehowl.wordpress.com/?p=1390</guid>
+	<link>https://eclipsehowl.wordpress.com/2018/03/21/eclipse-oxygen-3-ide-improvements-java-gradle-and-php/</link>
+	<description>&lt;p&gt;Eclipse Oxygen.3 is the last quarterly update of &lt;a href=&quot;http://www.eclipse.org/oxygen/&quot;&gt;Oxygen&lt;/a&gt;. Thanks to everyone who has contributed in any way! Even if the main focus is already on Photon, which will be released on June 27, it is worth updating your Eclipse IDE (unless you want to test a &lt;a href=&quot;https://www.eclipse.org/downloads/index-developer.php?photon&quot;&gt;pre-version of Photon&lt;/a&gt; instead).&lt;/p&gt;
+&lt;p&gt;As usual, I have made a short video that shows the IDE improvements that I find most noteworthy in action:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI&quot;&gt;&lt;img alt=&quot;&quot; class=&quot;aligncenter size-full wp-image-1391&quot; height=&quot;253&quot; src=&quot;https://eclipsehowl.files.wordpress.com/2018/03/eclipse_oxygen_3_ide_improvements.png?w=450&amp;amp;h=253&quot; width=&quot;450&quot; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;h3&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=24s&quot; rel=&quot;noopener&quot;&gt;Java:&lt;/a&gt;&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=28s&quot; rel=&quot;noopener&quot;&gt;Pasting of “module-info.java” snippets into source folder&lt;/a&gt; (&lt;a href=&quot;https://bugs.eclipse.org/522022&quot; rel=&quot;noopener&quot;&gt;bug 522022&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=42s&quot; rel=&quot;noopener&quot;&gt;JUnit tests now also work in a module project&lt;/a&gt; (&lt;a href=&quot;https://bugs.eclipse.org/525948&quot; rel=&quot;noopener&quot;&gt;bug 525948&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=51s&quot; rel=&quot;noopener&quot;&gt;Minor improvements, e. g. deprecate warning messages with “since” and “forRemoval”&lt;/a&gt; (&lt;a href=&quot;https://bugs.eclipse.org/526335&quot; rel=&quot;noopener&quot;&gt;bug 526335&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=1m06s&quot; rel=&quot;noopener&quot;&gt;Performance improvements, e. g. when compiling code that contains a lot of generic types&lt;/a&gt; (&lt;a href=&quot;https://bugs.eclipse.org/521438&quot; rel=&quot;noopener&quot;&gt;bug 521438&lt;/a&gt;)&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=1m42s&quot; rel=&quot;noopener&quot;&gt;Java 10 support not built-in, but available via Eclipse Marketplace: http://marketplace.eclipse.org/content/java-10-support-oxygen&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=2m&quot; rel=&quot;noopener&quot;&gt;Gradle&lt;/a&gt; (see also &lt;a href=&quot;http://projects.eclipse.org/projects/tools.buildship/reviews/2.2.0-release-review&quot; rel=&quot;noopener&quot;&gt;Buildship 2.2&lt;/a&gt;):&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=2m10s&quot; rel=&quot;noopener&quot;&gt;Support of Java 9&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=2m16s&quot; rel=&quot;noopener&quot;&gt;Gradle editor with basic syntax highlighting&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=2m28s&quot; rel=&quot;noopener&quot;&gt;Automatic project synchronization (disabled by default)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=2m45s&quot; rel=&quot;noopener&quot;&gt;PHP&lt;/a&gt; (see also &lt;a href=&quot;https://wiki.eclipse.org/PDT/NewIn53&quot; rel=&quot;noopener&quot;&gt;PDT 5.3&lt;/a&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=2m45s&quot; rel=&quot;noopener&quot;&gt;):&lt;/a&gt;&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=2m51s&quot; rel=&quot;noopener&quot;&gt;PHP 7.2 and PHPUnit 7 support&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=3m18s&quot; rel=&quot;noopener&quot;&gt;Configurable problem severities on project and workspace level&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=3m28s&quot; rel=&quot;noopener&quot;&gt;Formatter improvements, e. g. exclude unknown tags in comments from being formatted&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=3m51s&quot; rel=&quot;noopener&quot;&gt;Content assist appears much quicker, especially in large files.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;div&gt;&lt;a href=&quot;https://youtu.be/Y0-cO9wZj6w&quot;&gt;&lt;img alt=&quot;Eclipse Oxygen IDE Improvements: General, Java and Git&quot; class=&quot;alignnone&quot; height=&quot;82&quot; src=&quot;https://eclipsehowl.files.wordpress.com/2017/06/eclipse_oxygen_0_ide_improvements2.png?w=144&amp;amp;h=82&quot; width=&quot;144&quot; /&gt;&lt;/a&gt; &lt;a href=&quot;https://youtu.be/wI3VC1lhbK8&quot;&gt;&lt;img alt=&quot;Eclipse Oxygen.1a IDE Improvements: Java 9, JUnit 5, General, Gradle and PHP&quot; class=&quot;alignnone&quot; height=&quot;82&quot; src=&quot;https://eclipsehowl.files.wordpress.com/2017/11/eclipse_oxygen_1_ide_improvements.png?w=144&amp;amp;h=82&quot; width=&quot;144&quot; /&gt;&lt;/a&gt; &lt;a href=&quot;https://youtu.be/_EY1eeQtY_U&quot;&gt;&lt;img alt=&quot;Eclipse Oxygen.2 IDE Improvements: Java IDE, Git, C/C++&quot; class=&quot;alignnone&quot; height=&quot;82&quot; src=&quot;https://eclipsehowl.files.wordpress.com/2017/12/eclipse_oxygen_2_ide_improvements.png?w=144&amp;amp;h=82&quot; width=&quot;144&quot; /&gt;&lt;/a&gt;&lt;/div&gt;
+&lt;p&gt;Together with the previous Oxygen videos, you can view 72 improvements in action, in total about half an hour. Here are the direct chapter links (number of improvements in brackets):&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;General IDE (14)&lt;/strong&gt;: &lt;a href=&quot;https://youtu.be/Y0-cO9wZj6w?t=11s&quot;&gt;Oxygen.0 (11)&lt;/a&gt;, &lt;a href=&quot;https://youtu.be/wI3VC1lhbK8?t=6m26s&quot;&gt;Oxygen.1a (3)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Java and JUnit (33)&lt;/strong&gt;: &lt;a href=&quot;https://youtu.be/Y0-cO9wZj6w?t=4m4s&quot;&gt;Oxygen.0 (10)&lt;/a&gt;, &lt;a href=&quot;https://youtu.be/wI3VC1lhbK8?t=37s&quot;&gt;Oxygen.1a (13)&lt;/a&gt;, &lt;a href=&quot;https://youtu.be/_EY1eeQtY_U?t=26s&quot;&gt;Oxygen.2 (5)&lt;/a&gt;, &lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=24s&quot;&gt;Oxygen.3 (5)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Git (9)&lt;/strong&gt;: &lt;a href=&quot;https://youtu.be/Y0-cO9wZj6w?t=8m22s&quot;&gt;Oxygen.0 (5)&lt;/a&gt;, &lt;a href=&quot;https://youtu.be/_EY1eeQtY_U?t=1m36s&quot;&gt;Oxygen.2 (4)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Gradle (5)&lt;/strong&gt;: &lt;a href=&quot;https://youtu.be/wI3VC1lhbK8?t=7m54s&quot;&gt;Oxygen.1a (2)&lt;/a&gt;, &lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=2m&quot;&gt;Oxygen.3 (3)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;C/C++ (4)&lt;/strong&gt;: &lt;a href=&quot;https://youtu.be/_EY1eeQtY_U?t=2m40s&quot;&gt;Oxygen.2 (4)&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;PHP (7)&lt;/strong&gt;: &lt;a href=&quot;https://youtu.be/wI3VC1lhbK8?t=7m54s&quot;&gt;Oxygen.1a (3)&lt;/a&gt;, &lt;a href=&quot;https://youtu.be/uJNzMGrbXbI?t=2m45s&quot;&gt;Oxygen.3 (4)&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Thank you for watching and happy coding!&lt;/p&gt;</description>
+	<pubDate>Wed, 21 Mar 2018 14:00:02 +0000</pubDate>
+</item>
+<item>
+	<title>Donald Raab: EC by Example: Partitioning</title>
+	<guid isPermaLink="false">https://medium.com/p/d2704f826e66</guid>
+	<link>https://medium.com/@donraab/ec-by-example-partitioning-d2704f826e66?source=rss-df39b86e9f04------2</link>
+	<description>&lt;p&gt;Learn how to partition a collection using &lt;a href=&quot;https://www.eclipse.org/collections/&quot;&gt;Eclipse Collections&lt;/a&gt;.&lt;/p&gt;&lt;h3&gt;What is partitioning?&lt;/h3&gt;&lt;p&gt;Partitioning is a kind of &lt;a href=&quot;https://medium.com/@donraab/ec-by-example-filtering-4f14b906f718&quot;&gt;filtering&lt;/a&gt;, except that all elements of a collection are retained. Instead of being included (like Select) or excluded (like Reject), the elements of the collection are split into two collections based on whether they return true or false when passed to a predicate.&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/543/1*84sn7rmxQNW6xP_9V0XQ0g.png&quot; /&gt;A partition contains both selected and rejected elements&lt;/figure&gt;&lt;h3&gt;Partitioning a List (Java 8)&lt;/h3&gt;&lt;pre&gt;@Test&lt;br /&gt;public void partitioningLists()&lt;br /&gt;{&lt;br /&gt;    MutableList&amp;lt;Integer&amp;gt; mList = &lt;em&gt;mList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; iList = &lt;em&gt;iList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    Predicate&amp;lt;Integer&amp;gt; evens = i -&amp;gt; i % 2 == 0;&lt;br /&gt;&lt;br /&gt;    PartitionMutableList&amp;lt;Integer&amp;gt; mutable = &lt;br /&gt;            mList.&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;    &lt;br /&gt;    PartitionImmutableList&amp;lt;Integer&amp;gt; immutable = &lt;br /&gt;            iList.&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    PartitionIterable&amp;lt;Integer&amp;gt; lazy = &lt;br /&gt;            mList.asLazy().&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; expectedEvens = &lt;em&gt;iList&lt;/em&gt;(2, 4);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, mutable.getSelected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, immutable.getSelected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, lazy.getSelected().toList());&lt;br /&gt;&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; expectedOdds = &lt;em&gt;iList&lt;/em&gt;(1, 3, 5);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, mutable.getRejected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, immutable.getRejected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, lazy.getRejected().toList());&lt;br /&gt;}&lt;/pre&gt;&lt;h3&gt;Partitioning a List (Java 10)&lt;/h3&gt;&lt;p&gt;Here I will take advantage of local variable type inference using the var keyword in Java 10. With a type like PartitionMutableList, using var can significantly reduce the amount of noise in the code.&lt;/p&gt;&lt;pre&gt;@Test&lt;br /&gt;public void partitioningListsJava10()&lt;br /&gt;{&lt;br /&gt;    var mutableList = &lt;em&gt;mList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;    var immutableList = &lt;em&gt;iList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    Predicate&amp;lt;Integer&amp;gt; evens = i -&amp;gt; i % 2 == 0;&lt;br /&gt;&lt;br /&gt;    var mutable = mutableList.&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    var immutable = immutableList.&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    var lazy = mutableList.asLazy().&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    var expectedEvens = &lt;em&gt;iList&lt;/em&gt;(2, 4);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, mutable.getSelected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, immutable.getSelected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, lazy.getSelected().toList());&lt;br /&gt;&lt;br /&gt;    var expectedOdds = &lt;em&gt;iList&lt;/em&gt;(1, 3, 5);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, mutable.getRejected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, immutable.getRejected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, lazy.getRejected().toList());&lt;br /&gt;}&lt;/pre&gt;&lt;h3&gt;Covariance at play&lt;/h3&gt;&lt;p&gt;The return type for partition is determined by the source type. In the case of a MutableList as seen above, the method partition will return a PartitionMutableList. The following is a partial hierarchy of types that exist for partitioning a List. The full hierarchy includes similar relationships for Bag, Set, SortedSet, SortedBag and Stack.&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/1024/1*d38QbVF9-M5aP5cLCUmKhA.png&quot; /&gt;A partial partition hierarchy for Lists&lt;/figure&gt;&lt;h3&gt;Partitioning a Set (Java 8)&lt;/h3&gt;&lt;pre&gt;@Test&lt;br /&gt;public void partitioningSets()&lt;br /&gt;{&lt;br /&gt;    MutableSet&amp;lt;Integer&amp;gt; mSet = &lt;em&gt;mSet&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;    ImmutableSet&amp;lt;Integer&amp;gt; iSet = &lt;em&gt;iSet&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    Predicate&amp;lt;Integer&amp;gt; evens = i -&amp;gt; i % 2 == 0;&lt;br /&gt;&lt;br /&gt;    PartitionMutableSet&amp;lt;Integer&amp;gt; mutable =&lt;br /&gt;            mSet.&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    PartitionImmutableSet&amp;lt;Integer&amp;gt; immutable =&lt;br /&gt;            iSet.&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    PartitionIterable&amp;lt;Integer&amp;gt; lazy =&lt;br /&gt;            mSet.asLazy().&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    ImmutableSet&amp;lt;Integer&amp;gt; expectedEvens = &lt;em&gt;iSet&lt;/em&gt;(2, 4);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, mutable.getSelected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, immutable.getSelected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, lazy.getSelected().toSet());&lt;br /&gt;&lt;br /&gt;    ImmutableSet&amp;lt;Integer&amp;gt; expectedOdds = &lt;em&gt;iSet&lt;/em&gt;(1, 3, 5);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, mutable.getRejected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, immutable.getRejected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, lazy.getRejected().toSet());&lt;br /&gt;}&lt;/pre&gt;&lt;h3&gt;Partitioning a Set (Java 10)&lt;/h3&gt;&lt;pre&gt;@Test&lt;br /&gt;public void partitioningSetsJava10()&lt;br /&gt;{&lt;br /&gt;    var mutableSet = &lt;em&gt;mSet&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;    var immutableSet = &lt;em&gt;iSet&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    Predicate&amp;lt;Integer&amp;gt; evens = i -&amp;gt; i % 2 == 0;&lt;br /&gt;&lt;br /&gt;    var mutable = mutableSet.&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    var immutable = immutableSet.&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    var lazy = mutableSet.asLazy().&lt;strong&gt;partition&lt;/strong&gt;(evens);&lt;br /&gt;&lt;br /&gt;    var expectedEvens = &lt;em&gt;iSet&lt;/em&gt;(2, 4);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, mutable.getSelected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, immutable.getSelected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, lazy.getSelected().toSet());&lt;br /&gt;&lt;br /&gt;    var expectedOdds = &lt;em&gt;iSet&lt;/em&gt;(1, 3, 5);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, mutable.getRejected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, immutable.getRejected());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, lazy.getRejected().toSet());&lt;br /&gt;}&lt;/pre&gt;&lt;h3&gt;APIs and features covered in the examples&lt;/h3&gt;&lt;ol&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#partition-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Partition&lt;/a&gt; (&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/MutableList.html#partition-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Eager&lt;/a&gt; and Lazy) — filters &lt;strong&gt;&lt;em&gt;selecting&lt;/em&gt;&lt;/strong&gt; and &lt;strong&gt;&lt;em&gt;rejecting &lt;/em&gt;&lt;/strong&gt;elements that based on a given condition. Partition is a terminal operation on LazyIterables, which forces execution to happen.&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/impl/factory/Iterables.html#mList-T...-&quot;&gt;mList&lt;/a&gt; — Creates a MutableList&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/impl/factory/Iterables.html#iList-T-T-T-T-T-&quot;&gt;iList&lt;/a&gt; — Creates an ImmutableList&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/impl/factory/Iterables.html#mSet--&quot;&gt;mSet&lt;/a&gt; — Creates a MutableSet&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/impl/factory/Iterables.html#iSet--&quot;&gt;iSet&lt;/a&gt; — Creates an ImmutableSet&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#asLazy--&quot;&gt;asLazy&lt;/a&gt; — Returns a LazyIterable or LazyIntIterable&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#toList--&quot;&gt;toList&lt;/a&gt; — Converts the target Iterable into a MutableList&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#toSet--&quot;&gt;toSet&lt;/a&gt; — Converts the target Iterable into a MutableSet&lt;/li&gt;&lt;li&gt;var — Local variable Type Inference included in Java 10 (&lt;a href=&quot;http://openjdk.java.net/jeps/286&quot;&gt;JEP 286&lt;/a&gt;)&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/eclipse/eclipse-collections&quot;&gt;&lt;em&gt;Eclipse Collections&lt;/em&gt;&lt;/a&gt;&lt;em&gt; is open for &lt;/em&gt;&lt;a href=&quot;https://github.com/eclipse/eclipse-collections/blob/master/CONTRIBUTING.md&quot;&gt;&lt;em&gt;contributions&lt;/em&gt;&lt;/a&gt;&lt;em&gt;. If you like the library, you can let us know by starring it on GitHub.&lt;/em&gt;&lt;/p&gt;&lt;img height=&quot;1&quot; src=&quot;https://medium.com/_/stat?event=post.clientViewed&amp;amp;referrerSource=full_rss&amp;amp;postId=d2704f826e66&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Wed, 21 Mar 2018 05:53:54 +0000</pubDate>
+</item>
+<item>
+	<title>itemis: In five minutes to transitive imports within a DSL with Xtext</title>
+	<guid isPermaLink="true">https://blogs.itemis.com/en/in-five-minutes-to-transitive-imports-within-a-dsl-with-xtext</guid>
+	<link>https://blogs.itemis.com/en/in-five-minutes-to-transitive-imports-within-a-dsl-with-xtext</link>
+	<description>&lt;p&gt;&lt;span style=&quot;background-color: transparent;&quot;&gt;Xtext allows elements in DSLs to be referenced in several ways. One is to import elements via namespaces. This is done through the use of &lt;code&gt;ImportedNamespaceAwareLocalScopeProvider&lt;/code&gt;, and allows the import of individual or, using wildcards (. *), all elements of a namespace.&lt;/span&gt;&lt;/p&gt;  
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;However, there may be languages in which this behavior is not desired. In these languages, the user can explicitly import one or more resource files to access their contents.&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;A simple DSL with import behavior – thanks to Xtext&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;A DSL with such import behavior can easily be created with &lt;a href=&quot;https://www.itemis.com/en/xtext/&quot;&gt;Xtext&lt;/a&gt;&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;, by installing a parser rule in the DSL with the special attribute name &lt;code&gt;importURI&lt;/code&gt;. The following example illustrates a simple DSL that allows you to define names in arbitrary resources and use them in greetings.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;grammar org.xtext.example.mydsl.MyDsl with org.eclipse.xtext.common.Terminals
+generate myDsl &quot;http://www.xtext.org/example/mydsl/MyDsl&quot;
+Model:
+	includes+=Include*
+	names+=Name*
+	greetings+=Greeting*;
+Include:
+	'import' importURI=STRING
+	;
+Name:
+	'def' name=ID
+	;
+Greeting:
+	'Hallo' name=[Name] '!'
+	;&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Suppose we want to send greetings to colleagues in our company. Since the company is large and employs many members of staff who work in different divisions, we need to create a separate file for each division that contains the names of the respective people. This increases overview and maintainability.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;We want to include the name definitions in the scope by explicit import of a resource. This needs to be done in as rapid and resource-light a way as possible.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;The approach here is to use the index, which eliminates the need for unnecessary and (in large models) time-consuming resource loading. First we need to write information about the relevant resources into the index. To do this, we implement a class &lt;code&gt;MyDslResourceDescriptionStrategy&lt;/code&gt;, which derives from &lt;code&gt;DefaultResourceDescriptionStrategy&lt;/code&gt;. The strings containing the URIs of the  resources imported into the parser rule &lt;/span&gt;&lt;i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;model&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;, are merged into a comma-separated string and stored under the key &lt;em&gt;includes&lt;/em&gt; in the &lt;em&gt;userData&lt;/em&gt; map of the object description in the index.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;package org.xtext.example.mydsl
+
+import com.google.inject.Inject
+import java.util.HashMap
+import org.eclipse.xtext.naming.QualifiedName
+import org.eclipse.xtext.resource.EObjectDescription
+import org.eclipse.xtext.resource.IEObjectDescription
+import org.eclipse.xtext.resource.impl.DefaultResourceDescriptionStrategy
+import org.eclipse.xtext.scoping.impl.ImportUriResolver
+import org.eclipse.xtext.util.IAcceptor
+import org.xtext.example.mydsl.myDsl.Model
+import org.eclipse.emf.ecore.EObject
+
+class MyDslResourceDescriptionStrategy extends DefaultResourceDescriptionStrategy {
+	public static final String INCLUDES = &quot;includes&quot;
+	@Inject
+	ImportUriResolver uriResolver
+
+	override createEObjectDescriptions(EObject eObject, IAcceptor acceptor) {
+		if(eObject instanceof Model) {
+			this.createEObjectDescriptionForModel(eObject, acceptor)
+			return true
+		}
+		else {
+			super.createEObjectDescriptions(eObject, acceptor)
+		}
+	}
+
+	def void createEObjectDescriptionForModel(Model model, IAcceptor acceptor) {
+		val uris = newArrayList()
+		model.includes.forEach[uris.add(uriResolver.apply(it))]
+		val userData = new HashMap&amp;lt;string,string&amp;gt;
+		userData.put(INCLUDES, uris.join(&quot;,&quot;))
+		acceptor.accept(EObjectDescription.create(QualifiedName.create(model.eResource.URI.toString), model, userData))
+	}
+}&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;To use our &lt;code&gt;ResourceDescriptionStrategy&lt;/code&gt;, we need to bind it in the &lt;code&gt;MyDslRuntimeModule&lt;/code&gt;.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;package org.xtext.example.mydsl
+import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
+import org.eclipse.xtext.scoping.IGlobalScopeProvider
+import org.xtext.example.mydsl.scoping.MyDslGlobalScopeProvider
+class MyDslRuntimeModule extends AbstractMyDslRuntimeModule {
+ def Class bindIDefaultResourceDescriptionStrategy() {
+ MyDslResourceDescriptionStrategy
+ }
+}&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;So far we have only collected information and saved it in the index. To use this data, we also need our own &lt;code&gt;IGlobalScopeProvider&lt;/code&gt;. To do this, we implement a class &lt;code&gt;MyDslGlobalScopeProvider&lt;/code&gt;, which derives from &lt;code&gt;ImportUriGlobalScopeProvider&lt;/code&gt;, and override the &lt;code&gt;getImportedUris (Resource&lt;/code&gt;&lt;/span&gt;&lt;code&gt; &lt;span style=&quot;font-weight: 400;&quot;&gt;resource)&lt;/span&gt;&lt;/code&gt; method. This method returns a &lt;code&gt;LinkedHashSet&lt;/code&gt; that ultimately contains all the URIs to be imported into the resource.&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Reading the imported resources from the index is done by the &lt;code&gt;collectImportUris&lt;/code&gt; method. This method queries the &lt;code&gt;IResourceDescription.Manager&lt;/code&gt; for the resource's &lt;code&gt;IResourceDescription&lt;/code&gt;. F&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;rom this, the strings with the URIs of the imported resources of each &lt;em&gt;model&lt;/em&gt; element, are read from the &lt;em&gt;userData&lt;/em&gt; map, decomposed and the individual URIs are stored in a set.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;package org.xtext.example.mydsl.scoping
+
+import com.google.common.base.Splitter
+import com.google.inject.Inject
+import com.google.inject.Provider
+import java.util.LinkedHashSet
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.resource.IResourceDescription
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
+import org.eclipse.xtext.util.IResourceScopeCache
+import org.xtext.example.mydsl.MyDslResourceDescriptionStrategy
+import org.xtext.example.mydsl.myDsl.MyDslPackage
+
+class MyDslGlobalScopeProvider extends ImportUriGlobalScopeProvider {
+	private static final Splitter SPLITTER = Splitter.on(',');
+
+	@Inject
+	IResourceDescription.Manager descriptionManager;
+
+	@Inject
+	IResourceScopeCache cache;
+
+	override protected getImportedUris(Resource resource) {
+		return cache.get(MyDslGlobalScopeProvider.getSimpleName(), resource, new Provider&amp;lt;linkedhashset&amp;gt;() {
+			override get() {
+				val uniqueImportURIs = collectImportUris(resource, new LinkedHashSet(5))
+
+				val uriIter = uniqueImportURIs.iterator()
+				while(uriIter.hasNext()) {
+					if (!EcoreUtil2.isValidUri(resource, uriIter.next()))
+						uriIter.remove()
+				}
+				return uniqueImportURIs
+			}
+
+			def LinkedHashSet collectImportUris(Resource resource, LinkedHashSet uniqueImportURIs) {
+				val resourceDescription = descriptionManager.getResourceDescription(resource)
+				val models = resourceDescription.getExportedObjectsByType(MyDslPackage.Literals.MODEL)
+				
+				models.forEach[
+					val userData = getUserData(MyDslResourceDescriptionStrategy.INCLUDES)
+					if(userData !== null) {
+						SPLITTER.split(userData).forEach[uri |
+							var includedUri = URI.createURI(uri)
+							includedUri = includedUri.resolve(resource.URI)
+							uniqueImportURIs.add(includedUri)
+						]
+					}
+				]
+				return uniqueImportURIs
+			}
+		});
+	}
+}
+&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;To use our &lt;code&gt;MyDslGlobalScopeProvider&lt;/code&gt;, we have to bind it again in the &lt;code&gt;MyDslRuntimeModule&lt;/code&gt;.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;package org.xtext.example.mydsl
+
+import org.eclipse.xtext.resource.IDefaultResourceDescriptionStrategy
+import org.eclipse.xtext.scoping.IGlobalScopeProvider
+import org.xtext.example.mydsl.scoping.MyDslGlobalScopeProvider
+
+class MyDslRuntimeModule extends AbstractMyDslRuntimeModule {
+	def Class bindIDefaultResourceDescriptionStrategy() {
+		MyDslResourceDescriptionStrategy
+	}
+	override Class bindIGlobalScopeProvider() {
+		MyDslGlobalScopeProvider;
+	}
+}&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;We launch the editor for our small language and start creating the model files. We decide not to import the resources of the different company divisions individually, but instead create a resource that contains all imports, then import that. For this we create the following resources:&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;img alt=&quot;Ressourcen-Agile&quot; height=&quot;176&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/Blog/Software%20Development/Ressourcen-Agile.png?t=1522852283713&amp;amp;width=1506&amp;amp;height=176&amp;amp;name=Ressourcen-Agile.png&quot; style=&quot;width: 1506px;&quot; width=&quot;1506&quot; /&gt;&lt;br /&gt;&lt;img alt=&quot;Ressourcen-Xtext&quot; height=&quot;175&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/Blog/Software%20Development/Ressourcen-Xtext.png?t=1522852283713&amp;amp;width=1505&amp;amp;height=175&amp;amp;name=Ressourcen-Xtext.png&quot; style=&quot;width: 1505px;&quot; width=&quot;1505&quot; /&gt;&lt;br /&gt;&lt;img alt=&quot;Ressource-Kollegen&quot; height=&quot;180&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/Blog/Software%20Development/Ressource-Kollegen.png?t=1522852283713&amp;amp;width=1505&amp;amp;height=180&amp;amp;name=Ressource-Kollegen.png&quot; style=&quot;width: 1505px;&quot; width=&quot;1505&quot; /&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;But when creating the resource with the greetings, we notice that the names cannot be resolved. Why is that? Surely we wrote all imported resources into the index?&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;img alt=&quot;Ressource-Greetings&quot; height=&quot;417&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/Blog/Software%20Development/Ressource-Greetings.png?t=1522852283713&amp;amp;width=1506&amp;amp;height=417&amp;amp;name=Ressource-Greetings.png&quot; style=&quot;width: 1506px;&quot; width=&quot;1506&quot; /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;This is correct: all directly imported resources were written to the index. However, the imports that are themselves contained in an imported resource are ignored. The feature we need is called transitive imports: with this, importing a resource implicitly imports all the resources it itself imports.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;To enable transitive imports in our language, we need to customize our &lt;code&gt;MyDslGlobalScopeProvider&lt;/code&gt;. Instead of only storing the URI of an imported resource in the set, we also call the &lt;code&gt;collectImportUris&lt;/code&gt; method and pass the URI as a parameter, so that its own imported resources are also processed.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;package org.xtext.example.mydsl.scoping
+
+import com.google.common.base.Splitter
+import com.google.inject.Inject
+import com.google.inject.Provider
+import java.util.LinkedHashSet
+import org.eclipse.emf.common.util.URI
+import org.eclipse.emf.ecore.resource.Resource
+import org.eclipse.xtext.EcoreUtil2
+import org.eclipse.xtext.resource.IResourceDescription
+import org.eclipse.xtext.scoping.impl.ImportUriGlobalScopeProvider
+import org.eclipse.xtext.util.IResourceScopeCache
+import org.xtext.example.mydsl.MyDslResourceDescriptionStrategy
+import org.xtext.example.mydsl.myDsl.MyDslPackage
+
+class MyDslGlobalScopeProvider extends ImportUriGlobalScopeProvider {
+	private static final Splitter SPLITTER = Splitter.on(',');
+
+	@Inject
+	IResourceDescription.Manager descriptionManager;
+
+	@Inject
+	IResourceScopeCache cache;
+
+	override protected getImportedUris(Resource resource) {
+		return cache.get(MyDslGlobalScopeProvider.getSimpleName(), resource, new Provider&amp;lt;linkedhashset&amp;gt;() {
+			override get() {
+				val uniqueImportURIs = collectImportUris(resource, new LinkedHashSet(5))
+
+				val uriIter = uniqueImportURIs.iterator()
+				while(uriIter.hasNext()) {
+					if (!EcoreUtil2.isValidUri(resource, uriIter.next()))
+						uriIter.remove()
+				}
+				return uniqueImportURIs
+			}
+
+			def LinkedHashSet collectImportUris(Resource resource, LinkedHashSet uniqueImportURIs) {
+				val resourceDescription = descriptionManager.getResourceDescription(resource)
+				val models = resourceDescription.getExportedObjectsByType(MyDslPackage.Literals.MODEL)
+				
+				models.forEach[
+					val userData = getUserData(MyDslResourceDescriptionStrategy.INCLUDES)
+					if(userData !== null) {
+						SPLITTER.split(userData).forEach[uri |
+							var includedUri = URI.createURI(uri)
+							includedUri = includedUri.resolve(resource.URI)
+							if(uniqueImportURIs.add(includedUri)) {
+								collectImportUris(resource.getResourceSet().getResource(includedUri, true), uniqueImportURIs)
+							}
+						]
+					}
+				]
+				
+				return uniqueImportURIs
+			}
+		});
+	}
+}&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;When we reopen our resource with the greetings after this adaptation, we see that the names are resolved&lt;/span&gt; &lt;span style=&quot;font-weight: 400;&quot;&gt;by the transitive imports.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;The sample project can be downloaded &lt;a href=&quot;https://github.com/itemis/itemis-blog/tree/transitive_imports/sources&quot;&gt;here&lt;/a&gt;.&lt;/span&gt;&lt;/p&gt;  
+&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;https://track.hubspot.com/__ptq.gif?a=761475&amp;amp;k=14&amp;amp;r=https%3A%2F%2Fblogs.itemis.com%2Fen%2Fin-five-minutes-to-transitive-imports-within-a-dsl-with-xtext&amp;amp;bu=https%253A%252F%252Fblogs.itemis.com&amp;amp;bvt=rss&quot; style=&quot;width: 1px!important;&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Tue, 20 Mar 2018 14:45:00 +0000</pubDate>
+	<author>cwehrheim@itemis.de (Christian Wehrheim)</author>
+</item>
+<item>
+	<title>itemis: Building Domain-specific Languages with Xtext and Xtend</title>
+	<guid isPermaLink="true">https://blogs.itemis.com/en/building-domain-specific-languages-with-xtext-and-xtend</guid>
+	<link>https://blogs.itemis.com/en/building-domain-specific-languages-with-xtext-and-xtend</link>
+	<description>&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Specifying the requirements of a software system and converting such a specification into executable source code is difficult and error-prone. Requirements specifications written in prose are often ambiguous and hard to understand for developers. Therefore, the process of turning this documents into software is slow and prone to error. Domain-specific languages (DSL) challenge this problem by defining a semantically rich notation to describe domain concepts clear and concise. From the DSL models the boilerplate code can be deduced, thereby increasing the software development process efficiency as well as the overall quality. After giving an overview of the key concepts of a domain-specific language, the domain-specific language framework &lt;/span&gt;&lt;a href=&quot;https://www.itemis.com/en/xtext/&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Eclipse Xtext&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; will be introduced. In addition, it will be illustrated how DSL models can be processed efficiently using Eclipse Xtend.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;&lt;img alt=&quot;code-colours&quot; height=&quot;764&quot; src=&quot;https://blogs.itemis.com/hs-fs/hubfs/Blog/Xtext/code-colours.jpg?t=1522852283713&amp;amp;width=1604&amp;amp;height=764&amp;amp;name=code-colours.jpg&quot; style=&quot;width: 1604px;&quot; width=&quot;1604&quot; /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Domain-specific Languages&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Domain-specific languages are an integral part of our daily business. For example, when developers and business experts talk about requirements they will use terms like &lt;/span&gt;&lt;i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Client&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;, &lt;/span&gt;&lt;i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Contract&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;, or &lt;/span&gt;&lt;i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Payment&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; to describe the expected behavior. However, as soon as executable source code is required developers start translating these concepts into classes, data structures, and algorithms. At this point, some of the domain-specific information might get lost in translation. Thereby, business analysts have a hard time ensuring that all their business rules have been translated correctly. In addition, developers struggle with implementing changes, because they first have to understand the changes within the domain model before they can estimate and implement the subsequent changes to the source code.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;A domain-specific language is built to describe the concepts of a certain domain concisely with a semantically rich notation. Thereby, terms like &lt;/span&gt;&lt;i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Client&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; or &lt;/span&gt;&lt;i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Contract&lt;/span&gt;&lt;/i&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; are used in a language that is the foundation for domain model enhancements as well as for automated translation into executable software. In contrast to general purpose programming languages, concepts of a certain domain are described on a higher level of abstraction, so that they are understandable for business experts and developers.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Domain-specific languages are likely to be used in the context of model-driven development, however, there are many more usage scenarios. For example, they might be part of a larger software system used to express calculations or configurations. Further, they might be used as a thin layer on top of an existing language to provide feature-rich editor support.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Domain-driven design is an approach to describe the domain concepts in a language shared by business experts and developers. One central concept of this ubiquitous language are 'Entities'. The following example shows a simplistic textual DSL created with Xtext. The Entity DSL allows the specification of real-world entities with their relevant properties in a concise and clear notation.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;entity Client{
+   id:Number
+   name:String
+   surname:String
+}
+entity Contract{
+   id:Number
+   title:String
+   client:Client
+}&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;The simple example above shows two entities from the insurance domain that have a relation between each other. By describing the domain concepts on a rather high-level of abstraction (notice that there are no programming language specific data-types or notations) DSLs can be used by non-programmers. The technology independent language can close the gap between business experts and developers by becoming the common ground to discuss domain concepts benefiting both sides. On the one hand, the use of a formal language enables business analysts to specify domain concepts in a precise and unambiguous language. A task that is particularly hard using tools such as Word or Excel. On the other hand, the boilerplate code can be deduced from the DSL accelerating the development process. Moreover, the general code quality is increased, because the boilerplate code that is often the main spot for copy and paste errors is automatically created. Further, the source code structure is consistent benefiting maintenance and future development.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;In addition to being the center of the development process, domain-specific languages might be integrated into larger software systems. There are for example statechart tools embedding a domain-specific language to describe the input types and the internal variables of a state. By using a formal language with a given set of keywords and language constructs mature editor support can be provided. Further, the expressions can be interpreted automatically to simulate the model behavior. Thereby, business experts can get immediate feedback without the necessity of a running application. In addition, it is also possible to generate source code e.g. in Java or C++ from the statechart model.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;By providing a concise and semantically rich notation of the domain, DSLs increase efficiency and the overall quality of the product or process. Yet, in order to be successfully introduced a mature editor that integrates well with existing processes is required.&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Introducing Xtext&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;a href=&quot;https://www.eclipse.org/Xtext/&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Eclipse Xtext&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; was built to quickly create domain-specific languages including an integrated, feature-rich editor. To be more precise: Xtext is a framework for building language workbenches for textual domain-specific languages.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Let's first have a look at the small but important word &quot;textual&quot;. When talking about modeling most of us instinctively remember creating large graphical class diagrams. Instead of modeling lines and boxes on a canvas, textual modeling changes the user interface to a simple, yet feature-rich text editor. Not only creating and maintaining but also sharing - or should I say merging - text files is easier and often well supported by the IDE.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;The text files created using the Xtext editor are analyzed by a parser, that instantiates an &lt;/span&gt;&lt;a href=&quot;https://en.wikipedia.org/wiki/Eclipse_Modeling_Framework&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Ecore&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; model representing the abstract syntax tree (AST). The AST is not only the basis for the Eclipse integration but also allows frameworks such as &lt;/span&gt;&lt;a href=&quot;https://www.eclipse.org/gef/&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;GEF&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; to automatically create a graphical representation. Although it is easier to create and maintain models via text files, it is often beneficial to have a graphical representation to discuss the broader domain concepts and their relations.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;The next thing mentioned by the definition above is the &quot;language workbench&quot;. The term aggregates some of the concepts already mentioned. First, a feature-rich editor that offers code-completion, syntax-highlighting, formatting, error detection and so on. Second, a sophisticated language workbench offers different views on the same model as well as navigation and refactoring support. Finally, a language workbench should integrate with existing tools and frameworks to embed the DSL in existing processes. Xtext languages can be integrated into different IDEs such as the Eclipse IDE, IntelliJ IDEA, VSCode, and all editors that support the &lt;/span&gt;&lt;a href=&quot;https://microsoft.github.io/language-server-protocol/&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Language Server Protocol&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;. A feature-rich, well-integrated workbench is a key factor to success for a domain-specific language.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;After having spent some time on the benefits of a textual domain-specific language and the corresponding workbench, we will examine how Xtext and Xtend enable you to reach these goals.&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Getting Started with Xtext&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Xtext is a mature framework that was build to quickly create domain-specific languages with a sophisticated workbench. Boiling it down to the very minimum, a Xtext DSL only requires a grammar file. The powerful grammar defines the language and is input for a generation process that creates the full infrastructure including the parser, linker, type checker as well as editor support for the Eclipse IDE, any editor that supports the L&lt;/span&gt;&lt;a href=&quot;https://hosting.itemis.de/en/integrating-xtext-language-support-in-visual-studio-code&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;anguage Server Protocol&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;, and your favorite web browser.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Yet, the generated default often has to be customized in order to achieve company- or project-specific behavior. Therefore, the generated parts of the workbench can be customized by providing domain-specific implementations. Typical customizations include custom validations, narrowed proposals during code completion, or code formatting. A good default that is highly customizable, enables a fast proof of concept that can evolve over time becoming a highly specific DSL.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Having talked a lot about Xtext, let's get involved and create our first DSL. First of all, as you may have guessed already you need an Eclipse workspace with the Xtext framework included. You find a pre-bundled Eclipse version &lt;/span&gt;&lt;a href=&quot;https://www.eclipse.org/downloads/packages/eclipse-ide-java-and-dsl-developers/oxygen2&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; or you can download the required plugins in your existing Eclipse IDE right &lt;/span&gt;&lt;a href=&quot;http://download.eclipse.org/modeling/tmf/xtext/updates/composite/releases/&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;here&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;. After your Eclipse workspace is all setup, you can start creating your first DSL. &lt;br /&gt;Since I don't want to go to much into the details, I recommend you to try the &lt;/span&gt;&lt;a href=&quot;https://www.eclipse.org/Xtext/documentation/102_domainmodelwalkthrough.html&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Xtext 15-minute tutorial&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;. The tutorial shows how to create the Entity DSL we used in the example above. Further, there is a Domain-Model example that comes with the Xtext plugins including more than 800 JUnit test cases. The example project provides a good overview of the potential use of test-driven development when creating a DSL. The test cases not only cover parsing and validating the text files, but also demonstrate how the user interface functionality such as code completion or the outline view can be tested automatically.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Having finished the tutorial, the &lt;/span&gt;&lt;a href=&quot;https://www.eclipse.org/Xtext/documentation/index.html&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;documentation&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; offers a great overview of the different concepts embodied in Xtext. Further, the book &lt;a href=&quot;https://www.packtpub.com/application-development/implementing-domain-specific-languages-xtext-and-xtend-second-edition&quot;&gt;&quot;Implementing Domain-Specific Languages with Xtext and Xtend&quot;&lt;/a&gt; by Lorenzo Bettini explains the concepts with a lot of practical examples and best practices.  In addition, you should keep an eye on the &lt;/span&gt;&lt;a href=&quot;https://eclipse.org/forums/index.php?t=thread&amp;amp;frm_id=27&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Eclipse TMF forum&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; where you find answers to many questions. Finally, if you want to contribute to Xtext itself you are kindly invited to provide pull requests to the Xtext &lt;/span&gt;&lt;a href=&quot;https://github.com/eclipse/xtext&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;GitHub repositories&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;.&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Leverage the domain model with Xtend&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;As shown above, Xtext enables you to create and evolve DSLs quickly. However, at the end of the day domain-specific model regardless if it is a domain model, an expression, or a configuration is created to be further processed. At this point, Xtend comes into play. Xtend is a statically-typed-programming language built with Xtext and compiled to Java. Since it compiles to Java it integrates seamlessly with existing Java programs and vice versa. Xtend offers powerful features such as template strings, extension methods, and built-in functions such as filter, map, and reduce. Since Xtend is a domain-specific language it enables developers to write concepts available in Java, in a concise and semantically rich notation.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Xtend include many language concepts that are especially beneficial when processing models. First, it offers template strings which are ideal to generate executable code from a given model.&lt;br /&gt;&lt;br /&gt;&lt;/span&gt;&lt;/p&gt; 
+&lt;pre class=&quot;prettyprint&quot;&gt;def generateEntity(Entity entity){'''
+    &lt;span style=&quot;color: #000000;&quot;&gt;public class&lt;/span&gt; «entity.name»{
+       «entity.properties.forEach[generate]»
+    }
+''' 
+}
+
+def generate(Property property){'''
+private «property.type» «property.name»
+''' 
+}&lt;/pre&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Xtend enables the specification of multi-line strings that contain fixed text parts as well as dynamic parts computed from the given model. The example above shows a very basic multi-line String. Starting with triple quotes the String contains the static part &lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;public class&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; followed by a dynamic part in guillemets, aka « and ». When the string is interpreted at runtime the dynamic part is replaced by the name of the entity currently in focus. In the class body the template String contains another guillemets expression that calls the built-in &lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;forEach&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; function on the properties of the current entity. Thereby, the generate method is called that returns a string representing the property type and name. In addition, the Xtend editor also highlights the whitespaces as they will appear in the generated file. In contrast to other templating engines functions to evaluate dynamic values can be included directly in the templates.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Second, another important ingredient of Xtend is the support for lambda expressions. Besides lambda expressions, there are also higher-order functions such as &lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;filter&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;map&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;, &lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;reduce&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; etc. already shipped with the Xtend language library. The example above shows how the built-in function &lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;forEach&lt;/span&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt; is used to get the textual representation for all properties modeled in the current entity. The combination of built-in and custom lambda functions enables concise statements, e.g. for dealing with model-to-model transformations or model simulation.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Finally, there are many more features included in Xtend, such as extension methods, operator overloading, powerful switch expression, polymorphic method invocation, and so on, that make Xtend a conclusive add-on to the Java language.&lt;/span&gt;&lt;/p&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Besides being a powerful programming language, Xtend provides a compact and semantically rich language for processing domain-specific models. To get a better feeling for the language and its features have a look at this &lt;/span&gt;&lt;a href=&quot;https://www.eclipse.org/xtend/documentation/101_gettingstarted.html&quot;&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;tutorial&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;.&lt;/span&gt;&lt;/p&gt; 
+&lt;h2&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;&lt;br /&gt;Conclusion&lt;/span&gt;&lt;/h2&gt; 
+&lt;p&gt;&lt;span style=&quot;font-weight: 400;&quot;&gt;Domain-specific languages are used to express concepts of a certain domain in a concise and semantically rich notation. Employing DSLs enables model simulation, source code generation, and increases the overall quality. As shown above, Xtext is a framework built to quickly create domain-specific languages including a sophisticated and well-integrated editor. Since Xtext is highly customizable it supports the evolution of a DSL from an early prototype version to an individualized mature solution. Finally, the statically typed programming language Xtend provides mature features for model-to-model or model-to-text transformations. All in all, the combination of Xtext and Xtend will enable you to rapidly create your first domain-specific language workbench perfectly tailored for your domain.&lt;/span&gt;&lt;/p&gt;  
+&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;https://track.hubspot.com/__ptq.gif?a=761475&amp;amp;k=14&amp;amp;r=https%3A%2F%2Fblogs.itemis.com%2Fen%2Fbuilding-domain-specific-languages-with-xtext-and-xtend&amp;amp;bu=https%253A%252F%252Fblogs.itemis.com&amp;amp;bvt=rss&quot; style=&quot;width: 1px!important;&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Thu, 15 Mar 2018 14:31:49 +0000</pubDate>
+	<author>buender@itemis.de (Hendrik Bünder)</author>
+</item>
+<item>
+	<title>PapyrusUML: Some love for Toolsmiths</title>
+	<guid isPermaLink="false">http://papyrusuml.wordpress.com/?p=1080</guid>
+	<link>https://papyrusuml.wordpress.com/2018/03/15/some-love-for-toolsmiths/</link>
+	<description>&lt;p&gt;Today, my minions added a new page to the the unsung heroes of me: The Toolsmiths!&lt;/p&gt;
+&lt;p&gt;They are those who are brave enough to add capabilities to Papyrus and even to build new modeling tools on top of the Papyrus platform!&lt;/p&gt;
+&lt;p&gt;They are, of course, all the main developers of the Papyrus modeling platform and the various products in the Papyrus product line, but also those who provide fixes through bugzilla, those who build add-ons to Papyrus, and those who use Papyrus as the base for their own domain/company-specific modeling tools.&lt;/p&gt;
+&lt;p&gt;Interested in joining this fearless bunch? The &lt;a href=&quot;https://papyrusuml.wordpress.com/toolsmiths-tips-and-tricks/&quot;&gt;Toolsmith page&lt;/a&gt; is for you!&lt;/p&gt;
+&lt;p&gt; &lt;/p&gt;
+&lt;p&gt;Are you interested in writing for this blog? Please &lt;a href=&quot;https://papyrusuml.wordpress.com/contact-us/&quot;&gt;let us know&lt;/a&gt;!&lt;/p&gt;</description>
+	<pubDate>Thu, 15 Mar 2018 13:30:26 +0000</pubDate>
+</item>
+<item>
+	<title>Eclipse Announcements: Eclipse IoT Day Santa Clara | Speakers Announced</title>
+	<guid isPermaLink="true">http://feedproxy.google.com/~r/eclipse/fnews/~3/m-u4xUFGRYE/</guid>
+	<link>http://feedproxy.google.com/~r/eclipse/fnews/~3/m-u4xUFGRYE/</link>
+	<description>We're pleased to announce the speakers for the Eclipse IoT Day Santa Clara, co-located with IoT World 2018 on May 14.&lt;img alt=&quot;&quot; height=&quot;1&quot; src=&quot;http://feeds.feedburner.com/~r/eclipse/fnews/~4/m-u4xUFGRYE&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Thu, 15 Mar 2018 12:00:00 +0000</pubDate>
+</item>
+<item>
+	<title>Donald Raab: EC by Example: Filtering</title>
+	<guid isPermaLink="false">https://medium.com/p/4f14b906f718</guid>
+	<link>https://medium.com/@donraab/ec-by-example-filtering-4f14b906f718?source=rss-df39b86e9f04------2</link>
+	<description>&lt;p&gt;Learn how to filter a collection using &lt;a href=&quot;https://www.eclipse.org/collections/&quot;&gt;Eclipse Collections&lt;/a&gt;.&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/715/1*7C5g4RO3BSiqF-sYmUkyMA.png&quot; /&gt;&lt;/figure&gt;&lt;h3&gt;Filtering: Include or Exclude?&lt;/h3&gt;&lt;p&gt;If you have a singe method named filter, how do you know if it is supposed to be an inclusive or exclusive filter? In &lt;a href=&quot;https://github.com/eclipse/eclipse-collections&quot;&gt;Eclipse Collections&lt;/a&gt;, there are two filtering methods named &lt;em&gt;select&lt;/em&gt; and &lt;em&gt;reject&lt;/em&gt;.&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/620/1*fvYTX5UYIjrRwx4Ptf48VQ.png&quot; /&gt;&lt;/figure&gt;&lt;h3&gt;Filtering an Object List&lt;/h3&gt;&lt;pre&gt;@Test&lt;br /&gt;public void filteringUsingSelectAndReject()&lt;br /&gt;{&lt;br /&gt;    ExecutorService executor = Executors.&lt;em&gt;newWorkStealingPool&lt;/em&gt;();&lt;/pre&gt;&lt;pre&gt;    MutableList&amp;lt;Integer&amp;gt; mList = &lt;em&gt;mList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; iList = &lt;em&gt;iList&lt;/em&gt;(1, 2, 3, 4, 5);&lt;br /&gt;&lt;br /&gt;    Predicate&amp;lt;Integer&amp;gt; evens = i -&amp;gt; i % 2 == 0;&lt;/pre&gt;&lt;pre&gt;    MutableList&amp;lt;Integer&amp;gt; evensMutable = mList.select(evens);&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; evensImmutable = iList.select(evens);&lt;/pre&gt;&lt;pre&gt;    LazyIterable&amp;lt;Integer&amp;gt; evensLazy = mList.asLazy().select(evens);&lt;/pre&gt;&lt;pre&gt;    ParallelListIterable&amp;lt;Integer&amp;gt; evensParallel =&lt;br /&gt;            mList.asParallel(executor, 2).select(evens);&lt;br /&gt;&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; expectedEvens = &lt;em&gt;iList&lt;/em&gt;(2, 4);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, evensMutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, evensImmutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, evensLazy.toList());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, evensParallel.toList());&lt;br /&gt;&lt;br /&gt;    MutableList&amp;lt;Integer&amp;gt; oddsMutable = mList.reject(evens);&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; oddsImmutable = iList.reject(evens);&lt;/pre&gt;&lt;pre&gt;    LazyIterable&amp;lt;Integer&amp;gt; oddsLazy = mList.asLazy().reject(evens);&lt;/pre&gt;&lt;pre&gt;    ParallelListIterable&amp;lt;Integer&amp;gt; oddsParallel =&lt;br /&gt;            mList.asParallel(executor, 2).reject(evens);&lt;br /&gt;&lt;br /&gt;    ImmutableList&amp;lt;Integer&amp;gt; expectedOdds = &lt;em&gt;iList&lt;/em&gt;(1, 3, 5);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, oddsMutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, oddsImmutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, oddsLazy.toList());&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, oddsParallel.toList());&lt;br /&gt;}&lt;/pre&gt;&lt;h3&gt;Filtering a primitive List&lt;/h3&gt;&lt;pre&gt;@Test&lt;br /&gt;public void filteringPrimitivesUsingSelectAndReject()&lt;br /&gt;{&lt;br /&gt;    MutableIntList mList = IntLists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, 2, 3, 4, 5);&lt;br /&gt;    ImmutableIntList iList = IntLists.&lt;strong&gt;&lt;em&gt;immutable&lt;/em&gt;&lt;/strong&gt;.with(1, 2, 3, 4, 5);&lt;/pre&gt;&lt;pre&gt;    IntPredicate evens = i -&amp;gt; i % 2 == 0;&lt;br /&gt;&lt;br /&gt;    MutableIntList evensMutable = mList.select(evens);&lt;br /&gt;    ImmutableIntList evensImmutable = iList.select(evens);&lt;/pre&gt;&lt;pre&gt;    LazyIntIterable evensLazy = mList.asLazy().select(evens);&lt;br /&gt;&lt;br /&gt;    MutableIntList expectedEvens = IntLists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(2, 4);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens, evensMutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens,  evensImmutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedEvens,  evensLazy.toList());&lt;br /&gt;&lt;br /&gt;    MutableIntList oddsMutable = mList.reject(evens);&lt;br /&gt;    ImmutableIntList oddsImmutable = iList.reject(evens);&lt;/pre&gt;&lt;pre&gt;    LazyIntIterable oddsLazy = mList.asLazy().reject(evens);&lt;br /&gt;&lt;br /&gt;    MutableIntList expectedOdds = IntLists.&lt;strong&gt;&lt;em&gt;mutable&lt;/em&gt;&lt;/strong&gt;.with(1, 3, 5);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds, oddsMutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds,  oddsImmutable);&lt;br /&gt;    Assert.&lt;em&gt;assertEquals&lt;/em&gt;(expectedOdds,  oddsLazy.toList());&lt;br /&gt;}&lt;/pre&gt;&lt;h3&gt;What other types support Select and Reject?&lt;/h3&gt;&lt;p&gt;The &lt;a href=&quot;https://medium.com/@donraab/symmetric-sympathy-2c59d4541d60&quot;&gt;Symmetric Sympathy&lt;/a&gt; is strong with &lt;em&gt;select&lt;/em&gt; and &lt;em&gt;reject&lt;/em&gt;.&lt;/p&gt;&lt;figure&gt;&lt;img alt=&quot;&quot; src=&quot;https://cdn-images-1.medium.com/max/1024/1*IiWKcjSQPI_7ErSFbKuoOQ.png&quot; /&gt;Select and Reject is available across many types and concerns&lt;/figure&gt;&lt;h3&gt;Possible to filter both inclusively and exclusively in one iteration?&lt;/h3&gt;&lt;p&gt;Yes. There is a method called &lt;em&gt;partition&lt;/em&gt;. I will show &lt;em&gt;partition&lt;/em&gt; in the next blog in this series.&lt;/p&gt;&lt;h3&gt;APIs covered in the examples&lt;/h3&gt;&lt;ol&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#select-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Select&lt;/a&gt; (&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/MutableList.html#select-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Eager&lt;/a&gt;, &lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/LazyIterable.html#select-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Lazy&lt;/a&gt; and &lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/ParallelListIterable.html#select-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Parallel&lt;/a&gt;) — filters &lt;strong&gt;&lt;em&gt;including&lt;/em&gt;&lt;/strong&gt; elements that match a condition&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#reject-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Reject&lt;/a&gt; (&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/MutableList.html#reject-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Eager&lt;/a&gt;, &lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/LazyIterable.html#reject-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Lazy&lt;/a&gt; and &lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/ParallelListIterable.html#reject-org.eclipse.collections.api.block.predicate.Predicate-&quot;&gt;Parallel&lt;/a&gt;) — filters &lt;strong&gt;&lt;em&gt;excluding&lt;/em&gt;&lt;/strong&gt; elements that match a condition&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/impl/factory/Iterables.html#mList-T...-&quot;&gt;mList&lt;/a&gt; — Creates a MutableList&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/impl/factory/Iterables.html#iList-T-T-T-T-T-&quot;&gt;iList&lt;/a&gt; — Creates an ImmutableList&lt;/li&gt;&lt;li&gt;IntLists.mutable.&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/factory/list/primitive/MutableIntListFactory.html#with-int...-&quot;&gt;with&lt;/a&gt; — Creates a MutableIntList&lt;/li&gt;&lt;li&gt;IntLists.immutable.&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/factory/list/primitive/ImmutableIntListFactory.html#with-int...-&quot;&gt;with&lt;/a&gt; — Creates an ImmutableIntList&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#asLazy--&quot;&gt;asLazy&lt;/a&gt; — Returns a LazyIterable or LazyIntIterable&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/list/ListIterable.html#asParallel-java.util.concurrent.ExecutorService-int-&quot;&gt;asParallel&lt;/a&gt; — Returns a ParallelIterable&lt;/li&gt;&lt;li&gt;&lt;a href=&quot;https://www.eclipse.org/collections/javadoc/9.1.0/org/eclipse/collections/api/RichIterable.html#toList--&quot;&gt;toList&lt;/a&gt; — Converts the target Iterable into a MutableList&lt;/li&gt;&lt;/ol&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/eclipse/eclipse-collections&quot;&gt;&lt;em&gt;Eclipse Collections&lt;/em&gt;&lt;/a&gt;&lt;em&gt; is open for &lt;/em&gt;&lt;a href=&quot;https://github.com/eclipse/eclipse-collections/blob/master/CONTRIBUTING.md&quot;&gt;&lt;em&gt;contributions&lt;/em&gt;&lt;/a&gt;&lt;em&gt;. If you like the library, you can let us know by starring it on GitHub.&lt;/em&gt;&lt;/p&gt;&lt;img height=&quot;1&quot; src=&quot;https://medium.com/_/stat?event=post.clientViewed&amp;amp;referrerSource=full_rss&amp;amp;postId=4f14b906f718&quot; width=&quot;1&quot; /&gt;</description>
+	<pubDate>Thu, 15 Mar 2018 00:26:54 +0000</pubDate>
+</item>
+
+</channel>
+</rss>

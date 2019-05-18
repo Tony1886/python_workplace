@@ -1,0 +1,12 @@
+INSTUPNN.testNN2
+E:\python\python_workplace\MachineLearning\src\NN\testNN2.py
+INFOS:&&3|1|2|0&&3|3|2|0&&3|4|2|0&&3|5|2|0&&3|6|2|0&&3|7|2|0&&3|8|2|0&&3|9|2|0
+nn=5
+NN.testNN2=2
+labels_test=7
+X=3
+y=4
+digits=1
+labels_train=6
+predictions=8
+o=9

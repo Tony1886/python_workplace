@@ -1,0 +1,21 @@
+-- VERSION_4
+-- START DISKCACHE_2
+E:\python\python_workplace\.metadata\.plugins\org.eclipse.core.resources\.projects\TestNetwork\com.python.pydev.analysis\v2_indexcache
+NetWorkSpider|1494489848520611000|E:\python\python_workplace\TestNetwork\src\NetWorkSpider.py
+TestOs|1494491275707611000|E:\python\python_workplace\TestNetwork\src\TestOs.py
+-- END DISKCACHE
+-- START DICTIONARY
+2
+1=NetWorkSpider
+2=TestOs
+-- END DICTIONARY
+-- START TREE 1
+4
+get|2|getHtmlCode!10@getImag!10@
+htm|3|htmlurl!11@html!19@htmlCode!11@
+sav|1|saveDir!11@
+sou|1|soup!19@
+-- END TREE
+-- START TREE 2
+0
+-- END TREE

@@ -1,0 +1,64 @@
+-- VERSION_4
+-- START DISKCACHE_2
+E:\python\python_workplace\.metadata\.plugins\org.eclipse.core.resources\.projects\optics\com.python.pydev.analysis\v2_indexcache
+opticalFunc.__init__|1516947773615000000|E:\python\python_workplace\optics\src\opticalFunc\__init__.py
+propagation.__init__|1495353065509907000|E:\python\python_workplace\optics\src\propagation\__init__.py
+opticalFunc.test01|1521698860886200000|E:\python\python_workplace\optics\src\opticalFunc\test01.py
+propagation.test|1495375141294233000|E:\python\python_workplace\optics\src\propagation\test.py
+opticalFunc.myFunc|1516950054661000000|E:\python\python_workplace\optics\src\opticalFunc\myFunc.py
+propagation.propagation|1495364232888010000|E:\python\python_workplace\optics\src\propagation\propagation.py
+propagation.Tkoptics_test|1495421928330626000|E:\python\python_workplace\optics\src\propagation\Tkoptics_test.py
+-- END DISKCACHE
+-- START DICTIONARY
+7
+2=opticalFunc.test01
+3=propagation.test
+5=opticalFunc.myFunc
+7=mclass.__init__
+1=propagation.propagation
+6=mclass
+4=propagation.Tkoptics_test
+-- END DICTIONARY
+-- START TREE 1
+32
+Er|1|Er!11@
+Es|1|Es!11@
+F|1|F!19@
+H|1|H!11@
+Lr|1|Lr!11@
+Ls|1|Ls!11@
+Nr|1|Nr!11@
+Ns|1|Ns!11@
+__a|1|__author__!27@
+a|1|a!35@
+b|1|b!35@
+but|2|button1!35@button2!35@
+can|1|canvas!35@
+dr|1|dr!11@
+f|1|f!19@
+fig|2|fig!35@figDraw!34@
+hfu|1|Hfunction!10@
+lab|1|label!35@
+lam|1|lamb!11@
+max|1|maxL!35@
+mcl|1|mclass!25@
+mff|1|mfft!42@
+mif|1|mifft!42@
+roo|1|root!35@
+set|1|setNum!34@
+sta|1|start!27@
+top|1|topFrame!35@
+win|1|window!27@
+x|1|x!19@
+xr|1|xr!11@
+xs|1|xs!11@
+y|1|y!19@
+-- END TREE
+-- START TREE 2
+5
+__i|1|__init__!6&26@
+box|1|box!7&27@
+but|1|button!7&27@
+plo|1|plot!6&26@
+win|1|window!7&27@
+-- END TREE

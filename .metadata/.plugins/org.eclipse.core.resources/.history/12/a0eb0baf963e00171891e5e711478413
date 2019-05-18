@@ -1,0 +1,53 @@
+#coding:utf-8
+'''
+Created on 2017年5月21日
+
+@author: Administrator
+'''
+
+from tkinter import * 
+from numpy import *
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib
+from matplotlib.figure import Figure
+
+
+# matplotlib.use('TKAgg')
+
+def figDraw():    
+    global maxL
+    x=linspace(-maxL, maxL, 100)
+    y=sin(x) 
+    fig.clf()#删除画布，以防重合
+    a=fig.add_subplot(121)
+    b=fig.add_subplot(122)  
+    a.plot(x,y)#绘制一张图
+    [X,Y]=meshgrid(x,y)
+    F=sqrt(pow(X,2)+pow(Y,2))
+    b.imshow(F)#imshow画二维图
+    canvas = FigureCanvasTkAgg(fig, master=root)#将图片放入画布
+    canvas.get_tk_widget().grid(row=1,column=0)#将图片放入TKinter中
+    canvas.draw()
+def setNum():
+    global maxL
+    maxL=maxL+pi
+    figDraw()
+    
+root = Tk()
+maxL=pi
+fig=Figure(figsize=(16,9),dpi=100)#构造一张图
+a=fig.add_subplot(121)
+b=fig.add_subplot(122)#给图加两个子图
+canvas = FigureCanvasTkAgg(fig, master=root)#将图片放入画布
+canvas.get_tk_widget().grid(row=1,column=0)#将图片放入TKinter中
+
+topFrame = Frame(root)
+topFrame.grid(row=0,column=0)
+button1 = Button(topFrame,text = 'haha',command=figDraw)
+button1.pack(side=LEFT)
+button2 = Button(topFrame,text = '改变大小',command = setNum)
+button2.pack(side=LEFT,padx=5)
+
+
+mainloop()

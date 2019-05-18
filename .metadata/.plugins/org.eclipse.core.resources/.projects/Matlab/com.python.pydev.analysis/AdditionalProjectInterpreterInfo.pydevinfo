@@ -1,0 +1,47 @@
+-- VERSION_4
+-- START DISKCACHE_2
+E:\python\python_workplace\.metadata\.plugins\org.eclipse.core.resources\.projects\Matlab\com.python.pydev.analysis\v2_indexcache
+matrixOperation|1495352989683907000|E:\python\python_workplace\Matlab\src\matrixOperation.py
+propagation|1517151437000000000|E:\python\python_workplace\Matlab\src\propagation.py
+test02|1496660326107999000|E:\python\python_workplace\Matlab\src\test02.py
+Test01|1495761302256500000|E:\python\python_workplace\Matlab\src\Test01.py
+-- END DISKCACHE
+-- START DICTIONARY
+4
+3=matrixOperation
+2=propagation
+4=test02
+1=Test01
+-- END DICTIONARY
+-- START TREE 1
+26
+D|1|D!11@
+Er|1|Er!19@
+Es|1|Es!19@
+H|1|H!19@
+Lr|1|Lr!19@
+Ls|1|Ls!19@
+Nr|1|Nr!19@
+Ns|1|Ns!19@
+a1|1|a1!27@
+a2|1|a2!27@
+a3|1|a3!27@
+a4|1|a4!27@
+a5|1|a5!27@
+a6|1|a6!27@
+con|1|content!35@
+dr|1|dr!19@
+gau|1|Gauss!11@
+hfu|1|Hfunction!18@
+lam|1|lamb!19@
+new|2|newcontent1!35@newcontent2!35@
+w|1|w!11@
+x|2|x!11@x!27@
+xr|1|xr!19@
+xs|1|xs!19@
+y|2|y!27@y!11@
+y1|1|y1!11@
+-- END TREE
+-- START TREE 2
+0
+-- END TREE

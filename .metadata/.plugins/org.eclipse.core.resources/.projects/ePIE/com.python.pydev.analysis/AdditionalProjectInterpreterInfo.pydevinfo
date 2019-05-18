@@ -1,0 +1,48 @@
+-- VERSION_4
+-- START DISKCACHE_2
+E:\python\python_workplace\.metadata\.plugins\org.eclipse.core.resources\.projects\ePIE\com.python.pydev.analysis\v2_indexcache
+ref.unpickler|1515123683479600000|E:\python\python_workplace\ePIE\src\ref\unpickler.py
+ref.__init__|1515123672022600000|E:\python\python_workplace\ePIE\src\ref\__init__.py
+ref.ePIE_GA|1515123677486600000|E:\python\python_workplace\ePIE\src\ref\ePIE_GA.py
+ref.image_mod|1515123680468600000|E:\python\python_workplace\ePIE\src\ref\image_mod.py
+-- END DISKCACHE
+-- START DICTIONARY
+3
+3=ref.unpickler
+1=ref.ePIE_GA
+2=ref.image_mod
+-- END DICTIONARY
+-- START TREE 1
+28
+N|1|N!11@
+abs|1|abs_fn!19@
+ang|4|angle_fn!19@ang_ob_x!19@ang_ob_y!19@ang_ob!19@
+dim|2|dims!10@dims!26@
+e_v|1|E_VAL!11@
+epi|1|epie!10@
+err|1|error_loc!11@
+fil|4|filename!19@fileloc!19@fileset!11@filestart!11@
+h5_|1|h5_file_loc!11@
+ite|1|iterations!11@
+job|1|jobID!11@
+lis|2|list_file_loc!11@list_filename!11@
+mai|1|main!10@
+min|1|minimumError!10@
+n_p|1|N_POP!11@
+n_s|1|N_SETS!11@
+ob|1|ob!19@
+par|2|paramSave!26@param_dict!11@
+pic|1|pickler!10@
+set|1|setnum!11@
+sob|1|sob_fil!19@
+ste|1|stepsize!11@
+the|1|THETA!11@
+too|1|toolbox!11@
+up|1|up!26@
+xn|1|xn!11@
+yn|1|yn!11@
+z_v|1|Z_VAL!11@
+-- END TREE
+-- START TREE 2
+0
+-- END TREE

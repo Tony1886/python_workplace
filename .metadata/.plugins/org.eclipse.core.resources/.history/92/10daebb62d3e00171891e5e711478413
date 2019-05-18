@@ -1,0 +1,26 @@
+#coding:utf-8
+'''
+Created on 2017年5月21日
+
+@author: Administrator
+'''
+
+from tkinter import * 
+from numpy import *
+import matplotlib.pyplot as plt
+
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib
+
+# matplotlib.use('TKAgg')
+root = Tk()
+fig=matplotlib.figure.Figure(figsize=(5,4),dpi=100)
+x=random.randint(0,100)
+y=random.randint(0,100)
+a=fig.add_subplot(111)
+a.plot(x,y)
+canvas = FigureCanvasTkAgg(fig, master=root)
+canvas.draw()
+
+
+mainloop()

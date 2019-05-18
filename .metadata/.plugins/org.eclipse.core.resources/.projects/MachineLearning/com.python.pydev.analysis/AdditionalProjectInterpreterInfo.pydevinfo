@@ -1,0 +1,102 @@
+-- VERSION_4
+-- START DISKCACHE_2
+E:\python\python_workplace\.metadata\.plugins\org.eclipse.core.resources\.projects\MachineLearning\com.python.pydev.analysis\v2_indexcache
+SVM.SVM3|1495261074985000000|E:\python\python_workplace\MachineLearning\src\SVM\SVM3.py
+KNN.__init__|1495093802650000000|E:\python\python_workplace\MachineLearning\src\KNN\__init__.py
+SVM.SVM2|1495257901613000000|E:\python\python_workplace\MachineLearning\src\SVM\SVM2.py
+KNN.test|1495112799477000000|E:\python\python_workplace\MachineLearning\src\KNN\test.py
+KNN.KNN|1495160050610000000|E:\python\python_workplace\MachineLearning\src\KNN\KNN.py
+SVM.SVM1|1495182702075000000|E:\python\python_workplace\MachineLearning\src\SVM\SVM1.py
+DecisionTree.__init__|1494556733344611000|E:\python\python_workplace\MachineLearning\src\DecisionTree\__init__.py
+KNN.KNN2|1495098074627000000|E:\python\python_workplace\MachineLearning\src\KNN\KNN2.py
+NN.testNN|1521888876180200000|E:\python\python_workplace\MachineLearning\src\NN\testNN.py
+SVM.__init__|1495181862020000000|E:\python\python_workplace\MachineLearning\src\SVM\__init__.py
+DecisionTree.test|1495093229027000000|E:\python\python_workplace\MachineLearning\src\DecisionTree\test.py
+DecisionTree.Test01|1495093214082000000|E:\python\python_workplace\MachineLearning\src\DecisionTree\Test01.py
+NN.testNN2|1496147967691803000|E:\python\python_workplace\MachineLearning\src\NN\testNN2.py
+NN.NN1|1496148315842803000|E:\python\python_workplace\MachineLearning\src\NN\NN1.py
+NN.__init__|1495713445444000000|E:\python\python_workplace\MachineLearning\src\NN\__init__.py
+NN.test|1496301460414002000|E:\python\python_workplace\MachineLearning\src\NN\test.py
+-- END DISKCACHE
+-- START DICTIONARY
+13
+3=SVM.SVM3
+2=SVM.SVM2
+9=KNN.test
+1=SVM.SVM1
+8=KNN.KNN
+10=KNN.KNN2
+4=NN.testNN
+12=NeuralNetwork
+6=DecisionTree.test
+5=NN.testNN2
+7=DecisionTree.Test01
+11=NN.NN1
+13=NeuralNetwork.__init__
+-- END DICTIONARY
+-- START TREE 1
+55
+X|5|X!11@X!19@X!27@X!35@X!43@
+Y|1|Y!19@
+a|2|a!19@a!51@
+all|1|allElectronicsDate!59@
+b|1|b!19@
+clf|4|clf!59@clf!27@clf!11@clf!19@
+cor|1|correctNum!67@
+dic|2|dict!75@dic!75@
+dig|1|digits!43@
+dir|1|dirc!51@
+dum|2|dummyX!59@dummyY!59@
+eig|2|eigenfaces!27@eigenface_titles!27@
+f|1|f!59@
+fea|1|featureList!59@
+fil|1|filename!67@
+fin|1|findKmin!66@
+get|2|getneighbor!66@getpredict!66@
+hea|1|headers!59@
+iri|1|iris!83@
+k|1|k!67@
+knn|1|knn!83@
+lab|3|labels_train!43@labelList!59@labels_test!43@
+lb|1|lb!59@
+lfw|1|lfw_people!27@
+loa|1|loadData!66@
+log|2|logistic_derivative!90@logistic!90@
+n_c|2|n_components!27@n_classes!27@
+n_f|1|n_features!27@
+nei|1|neighbors!67@
+neu|1|NeuralNetwork!89@
+new|1|newRowX!59@
+nn|2|nn!35@nn!43@
+o|1|o!43@
+one|1|oneRowX!59@
+par|1|param_grid!27@
+pca|1|pca!27@
+plo|1|plot_gallery!26@
+poi|1|pointDistance!66@
+pre|5|predictedY!59@prediction_titles!27@predict!67@predictLabel!83@predictions!43@
+rea|1|reader!59@
+row|1|rowDict!59@
+t0|1|t0!27@
+tan|2|tanh!90@tanh_deriv!90@
+tar|1|target_names!27@
+tes|1|testset!67@
+tit|1|title!26@
+tra|2|trainRatio!67@trainset!67@
+vec|1|vec!59@
+w|1|w!19@
+x_t|2|X_test_pca!27@X_train_pca!27@
+xx|1|xx!19@
+y|4|y!43@y!11@y!35@y!27@
+y_p|1|y_pred!27@
+yy|1|yy!19@
+yy_|2|yy_down!19@yy_up!19@
+-- END TREE
+-- START TREE 2
+5
+__i|1|__init__!12&90@
+act|2|activation!13&91@activation_deriv!13&91@
+fit|1|fit!12&90@
+pre|1|predict!12&90@
+wei|1|weights!13&91@
+-- END TREE

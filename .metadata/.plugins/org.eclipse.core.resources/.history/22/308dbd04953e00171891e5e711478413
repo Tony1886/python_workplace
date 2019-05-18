@@ -1,0 +1,55 @@
+#coding:utf-8
+'''
+Created on 2017年5月21日
+
+@author: Administrator
+'''
+
+from tkinter import * 
+from numpy import *
+import matplotlib.pyplot as plt
+
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib
+from matplotlib.figure import Figure
+
+
+# matplotlib.use('TKAgg')
+
+def figDraw():
+    global maxL
+    x=linspace(-maxL, maxL, 100)
+    y=sin(x)   
+    a.plot(x,y)#绘制一张图
+    [X,Y]=meshgrid(x,y)
+    F=sqrt(pow(X,2)+pow(Y,2))
+    b.imshow(F)#imshow画二维图
+    canvas = FigureCanvasTkAgg(fig, master=root)#将图片放入画布
+    canvas.get_tk_widget().grid(row=1,column=1)#将图片放入TKinter中
+    canvas.draw()
+def setNum():
+    global maxL
+    maxL=maxL+pi
+    figDraw()
+def closeFig():
+    fig.clf()#删除Figure
+def initialFig():
+    #初始化画布
+    fig=Figure(figsize=(5,4),dpi=600)
+    
+root = Tk()
+fig=Figure(figsize=(5,4),dpi=600)
+maxL=pi
+canvas = FigureCanvasTkAgg(fig, master=root)#将图片放入画布
+canvas.get_tk_widget().grid(row=1,column=1)#将图片放入TKinter中
+a=fig.add_subplot(121)
+b=fig.add_subplot(122)
+
+button1 = Button(text = 'haha',command=figDraw)
+button1.grid(row=0,column=0)
+button2 = Button(text = '改变范围',command = setNum)
+button2.grid(row=0,column=1)
+button3 = Button(text = 'clear',command = closeFig)
+button3.grid(row=0,column=2)
+
+mainloop()

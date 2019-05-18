@@ -1,0 +1,77 @@
+-- VERSION_4
+-- START DISKCACHE_2
+D:\python\python_workplace\.metadata\.plugins\org.eclipse.core.resources\.projects\test1\com.python.pydev.analysis\v2_indexcache
+tanzj.test|1494851764059818000|D:\python\python_workplace\test1\tanzj\test.py
+tanzj.demo1|1494427212268275000|D:\python\python_workplace\test1\tanzj\demo1.py
+tanzj.toolbar|1494769792072968000|D:\python\python_workplace\test1\tanzj\toolbar.py
+tanzj.toplevel|1494768607992147000|D:\python\python_workplace\test1\tanzj\toplevel.py
+tanzj.menu|1494774686180514000|D:\python\python_workplace\test1\tanzj\menu.py
+tanzj.event|1494767381985854000|D:\python\python_workplace\test1\tanzj\event.py
+tanzj.messageBox|1494770067787812000|D:\python\python_workplace\test1\tanzj\messageBox.py
+tanzjNote.Note|1494861501566078000|D:\python\python_workplace\test1\tanzjNote\Note.py
+tanzj.__init__|1496842354058387000|D:\python\python_workplace\test1\tanzj\__init__.py
+tanzj.grid|1494771503251960000|D:\python\python_workplace\test1\tanzj\grid.py
+tanzjNote.__init__|1494772386374176000|D:\python\python_workplace\test1\tanzjNote\__init__.py
+tanzj.statusbar|1494770470711827000|D:\python\python_workplace\test1\tanzj\statusbar.py
+-- END DISKCACHE
+-- START DICTIONARY
+12
+8=tanzj.test
+11=App
+2=tanzj.demo1
+3=tanzj.toolbar
+10=tanzj.toplevel
+6=tanzj.menu
+1=tanzjNote.Note
+5=tanzj.messageBox
+7=tanzj.event
+4=tanzj.grid
+9=tanzj.statusbar
+12=App.__init__
+-- END DICTIONARY
+-- START TREE 1
+36
+abo|2|about!10@aboutMenu!11@
+app|2|app!19@App!17@
+aut|1|author!10@
+b|1|b!27@
+but|3|button2!35@button!43@button1!35@
+c|1|c!27@
+cal|4|callback!42@callback!26@callback!50@callback!58@
+clo|1|closeWindow!58@
+cop|1|copy!10@
+cut|1|cut!10@
+e1|1|e1!35@
+e2|1|e2!35@
+edi|1|editMenu!11@
+fil|5|fileMenu!11@filename!11@fileMenu!51@fileNew!10@fileOpen!10@
+fra|1|frame!59@
+hel|1|helpMenu!51@
+key|1|key!58@
+lab|2|label!19@label!35@
+lin|1|linlabel!11@
+lis|1|listbox!67@
+mas|1|master!67@
+men|2|menu!51@menubar!11@
+pas|1|paste!10@
+red|1|redo!10@
+roo|9|root!43@root!35@root!19@root!51@root!75@root!59@root!83@root!11@root!27@
+sav|2|saveas!10@savefile!10@
+scr|2|scroll!11@scrollbar!67@
+sea|1|search!10@
+sel|1|selectAll!10@
+sho|1|shortButton!11@
+sta|2|status!11@status!75@
+tes|1|test!10@
+tex|1|textpad!11@
+too|2|toolbar!27@toolbar!11@
+top|1|top!83@
+und|1|undo!10@
+-- END TREE
+-- START TREE 2
+4
+__i|1|__init__!11&18@
+but|1|button!12&19@
+hib|1|hibutton!12&19@
+say|1|sayhai!11&18@
+-- END TREE

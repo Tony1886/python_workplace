@@ -1,0 +1,33 @@
+#coding:utf-8
+'''
+Created on 2017年5月21日
+
+@author: Administrator
+'''
+
+from tkinter import * 
+from numpy import *
+import matplotlib.pyplot as plt
+
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib
+
+
+# matplotlib.use('TKAgg')
+root = Tk()
+fig=matplotlib.figure.Figure(figsize=(5,4),dpi=100)
+def figDraw():
+    x=linspace(-pi, pi, 100)
+    y=sin(x)
+    a=fig.add_subplot(111)
+    a.plot(x,y)#绘制一张图
+    [X,Y]=meshgrid(x,y)
+    a.imshow(X)#imshow画二维图
+    canvas = FigureCanvasTkAgg(fig, master=root)#将图片放入画布
+    canvas.get_tk_widget().grid(row=1,column=1)#将图片放入TKinter中
+    canvas.draw()
+button = Button(text = 'haha',command=figDraw())
+button.grid(row=1,column=0)
+
+
+mainloop()
